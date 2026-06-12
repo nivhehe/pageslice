@@ -1,11 +1,1697 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Free PDF Extractor Online - Split & Merge PDF Pages | PageSlice" description="Use the best free PDF extractor tool 2026 to split, delete, organize, or merge PDF pages, images, Word DOCX, and PowerPoint presentations 100% locally in your browser.">
+  <!-- SpaceX-inspired dark container with custom grid backgrounds -->
+  <main class="spacex-bg min-h-screen text-white relative overflow-hidden flex flex-col font-inter selection:bg-primary selection:text-on-primary">
+    
+    <!-- Top Decorative Line -->
+    <div class="h-1 bg-gradient-to-right from-primary/20 via-primary to-primary/20 w-full"></div>
+
+    <div class="max-w-6xl w-full mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1 flex flex-col relative z-10">
+      
+      <Header />
+
+      <!-- Central Content Hub -->
+      <div class="flex-1 flex flex-col justify-center">
+
+        <!-- Error Notification Banner -->
+        <div id="error-banner" class="hidden border border-negative/50 bg-negative-bg/40 backdrop-blur-md rounded-2xl p-4 mb-6 flex items-center justify-between gap-4 animate-fade-in text-red-200">
+          <div class="flex items-center gap-3">
+            <svg class="h-5 w-5 text-negative shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span id="error-message" class="text-sm font-mono uppercase tracking-wider">ERROR: INVALID DOCUMENT FORMAT</span>
+          </div>
+          <button id="close-error-btn" class="text-mute hover:text-white transition-colors" aria-label="Dismiss error">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- STATE 1: File Dropzone (Default) -->
+        <section id="dropzone-section" class="w-full">
+          <div 
+            id="dropzone" 
+            class="border-2 border-dashed border-neutral-800 hover:border-primary/50 transition-all duration-300 rounded-2xl p-12 text-center bg-canvas-soft/30 backdrop-blur-sm cursor-pointer flex flex-col items-center justify-center min-h-[350px] group relative"
+          >
+            <!-- Grid Background Overlay inside dropzone -->
+            <div class="absolute inset-0 spacex-grid opacity-30 rounded-2xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col items-center">
+              <!-- Animated Rocket/Document SVG Icon -->
+              <div class="h-16 w-16 mb-6 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center group-hover:border-primary/30 group-hover:scale-110 transition-all duration-300">
+                <svg class="h-8 w-8 text-mute group-hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+
+              <h2 class="text-lg font-mono font-bold tracking-widest text-white uppercase mb-2">
+                Drag & Drop Files
+              </h2>
+              <p class="body-sm text-mute mb-6">
+                Supports multiple PDF, DOCX, PPTX, and Image (PNG, JPG) files. All files are processed locally.
+              </p>
+
+              <!-- Premium Pill Button (Wise + SpaceX styling) -->
+              <button 
+                id="browse-btn" 
+                class="bg-primary text-on-primary hover:bg-primary-active active:scale-95 transition-all rounded-xl px-8 py-3 text-sm font-bold tracking-wider uppercase border border-primary/20 glow-primary hover:glow-primary-strong"
+              >
+                Browse Files
+              </button>
+              
+              <input type="file" id="pdf-input" class="hidden" accept=".pdf,.docx,.pptx,.png,.jpg,.jpeg" multiple />
+            </div>
+          </div>
+
+          <!-- Feature Advantages Grid (Sleek telemetry styling) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 font-mono text-left">
+            <div class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-5 rounded-2xl flex flex-col justify-between hover:border-primary/20 transition-all duration-300">
+              <div>
+                <span class="text-[10px] text-primary uppercase tracking-widest font-bold">SPEED SPEC</span>
+                <h3 class="text-sm font-bold text-white uppercase mt-2 mb-1">Instant Processing</h3>
+                <p class="text-xs text-mute font-inter leading-relaxed">No upload times. Multiple document compilation is done locally in your browser memory within milliseconds.</p>
+              </div>
+            </div>
+            
+            <div class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-5 rounded-2xl flex flex-col justify-between hover:border-primary/20 transition-all duration-300">
+              <div>
+                <span class="text-[10px] text-primary uppercase tracking-widest font-bold">ACCESS SPEC</span>
+                <h3 class="text-sm font-bold text-white uppercase mt-2 mb-1">Zero Friction</h3>
+                <p class="text-xs text-mute font-inter leading-relaxed">No login, registration, or emails required. Instant utility tools, ready when you are.</p>
+              </div>
+            </div>
+            
+            <div class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-5 rounded-2xl flex flex-col justify-between hover:border-primary/20 transition-all duration-300">
+              <div>
+                <span class="text-[10px] text-primary uppercase tracking-widest font-bold">COST SPEC</span>
+                <h3 class="text-sm font-bold text-white uppercase mt-2 mb-1">100% Free & Private</h3>
+                <p class="text-xs text-mute font-inter leading-relaxed">Zero subscription fees or usage caps. Client-side execution sandboxes files on your device.</p>
+              </div>
+            </div>
+
+            <div class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-5 rounded-2xl flex flex-col justify-between hover:border-primary/20 transition-all duration-300">
+              <div>
+                <span class="text-[10px] text-primary uppercase tracking-widest font-bold">FORMAT SPEC</span>
+                <h3 class="text-sm font-bold text-white uppercase mt-2 mb-1">Multi-Format support</h3>
+                <p class="text-xs text-mute font-inter leading-relaxed">Combine PDFs, Word DOCX documents, PowerPoint PPTX presentations, and images simultaneously in one flow.</p>
+              </div>
+            </div>
+
+            <div class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-5 rounded-2xl flex flex-col justify-between hover:border-primary/20 transition-all duration-300">
+              <div>
+                <span class="text-[10px] text-primary uppercase tracking-widest font-bold">WORKSPACE SPEC</span>
+                <h3 class="text-sm font-bold text-white uppercase mt-2 mb-1">Incremental uploads</h3>
+                <p class="text-xs text-mute font-inter leading-relaxed">Append additional documents or images at any time without losing your current selections or reordered list.</p>
+              </div>
+            </div>
+
+            <div class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-5 rounded-2xl flex flex-col justify-between hover:border-primary/20 transition-all duration-300">
+              <div>
+                <span class="text-[10px] text-primary uppercase tracking-widest font-bold">ORDER SPEC</span>
+                <h3 class="text-sm font-bold text-white uppercase mt-2 mb-1">Drag & Drop Arranger</h3>
+                <p class="text-xs text-mute font-inter leading-relaxed">Reorder any page visually in the grid to customize the output document sequence perfectly before extracting.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- On-Page SEO Information Deck -->
+          <article class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-8 rounded-2xl mt-12 font-mono text-left max-w-none text-mute">
+            <header class="border-b border-neutral-800/50 pb-6 mb-6">
+              <span class="text-[10px] text-primary uppercase tracking-widest font-bold">SYSTEM OVERVIEW</span>
+              <h2 class="text-xl font-bold text-primary uppercase mt-2">PageSlice: The Ultimate Free PDF Extractor, Page Organizer & PDF Merger</h2>
+              <p class="text-xs font-inter mt-3 leading-relaxed">
+                Welcome to PageSlice, the premier, privacy-first <strong class="font-bold">free pdf extractor online</strong> that operates entirely within your browser. If you are looking for the <strong class="font-bold">best free pdf extractor tool 2026</strong> or a secure <strong class="font-bold">pdf page remover</strong> that runs 100% locally on your computer or mobile phone, PageSlice is designed for you. With page-level control and multi-format compatibility, PageSlice is the absolute <strong class="font-bold">best free pdf extractor tools 2026</strong> has to offer, eliminating the need to ever upload sensitive documents to third-party servers.
+              </p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs font-inter leading-relaxed">
+              <!-- Column 1 -->
+              <div class="space-y-6">
+                <div>
+                  <h3 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">Powerful PDF Page Organizer & PDF Page Delete Capabilities</h3>
+                  <p>
+                    Managing complex PDF documents can be frustrating when you only need a few pages. PageSlice serves as an advanced <strong class="font-semibold">pdf page organizer</strong>, allowing you to visually inspect each page of your documents in real-time. Whether you need to split pages, rearrange them, or execute a <strong class="font-semibold">pdf page delete</strong> command, our interactive interface makes it simple. Just drop your file, choose the pages to keep, or use the tool as a <strong class="font-semibold">pdf page remover</strong> to delete unwanted sheets. Once satisfied, click "Extract" to generate a clean, optimized file instantly.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">Local Conversion: Word, PowerPoint & Images to PDF</h3>
+                  <p>
+                    Beyond basic page extraction, PageSlice is an all-in-one <strong class="font-semibold">free pdf maker</strong> and format converter. It supports instant document transformation directly on your device:
+                  </p>
+                  <ul class="list-disc pl-5 mt-2 space-y-2">
+                    <li><strong class="font-semibold">Photo to PDF Converter:</strong> Need to <strong class="font-semibold">convert photo to pdf</strong>? PageSlice is the fastest <strong class="font-semibold">photo to pdf</strong> processor online. It is fully responsive, answering the popular query of <strong class="font-semibold">how to convert photo to pdf on iphone</strong> or <strong class="font-semibold">how to convert a photo to pdf</strong> on any smartphone. Simply drop your PNG or JPG images, arrange them visually, and extract them as a single document.</li>
+                    <li><strong class="font-semibold">Word Document to PDF:</strong> Easily learn <strong class="font-semibold">how to convert word document to pdf</strong> without Microsoft Office. Simply select your .docx files, and our system compiles them locally.</li>
+                    <li><strong class="font-semibold">PPT to PDF Converter:</strong> Transform PowerPoint .pptx presentations into high-fidelity PDFs instantly using our integrated <strong class="font-semibold">ppt to pdf converter</strong>.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Column 2 -->
+              <div class="space-y-6">
+                <div>
+                  <h3 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">High-Performance Free PDF Merger</h3>
+                  <p>
+                    Need to merge multiple documents into one? Our built-in <strong class="font-semibold">free pdf merger</strong> is highly optimized. As a robust <strong class="font-semibold">online pdf merger</strong>, PageSlice allows you to append multiple files (PDFs, images, slides, and docs) in a single session. This <strong class="font-semibold">free online pdf merger</strong> lets you drag and drop pages from different source files to arrange them in any sequence. It is the easiest way to utilize a <strong class="font-semibold">pdf merger for free</strong> or perform a <strong class="font-semibold">pdf merger free</strong> operation on your files.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">Best Free PDF Extractor Software Comparison: Online vs. Desktop Download</h3>
+                  <p>
+                    When choosing a tool to manage your files, you might consider a <strong class="font-semibold">free pdf extractor download</strong> or dedicated offline <strong class="font-semibold">free pdf extractor software</strong>. Here is a quick <strong class="font-semibold">best free pdf extractor software comparison</strong> to show why PageSlice is the superior choice:
+                  </p>
+                  <ol class="list-decimal pl-5 mt-2 space-y-2">
+                    <li><strong class="font-semibold">Privacy & Security:</strong> Traditional software download and server-side web platforms risk exposing your documents. PageSlice processes all files inside your web browser using HTML5 features—your files never leave your device.</li>
+                    <li><strong class="font-semibold">Speed & Accessibility:</strong> No installation, sign-ups, or subscriptions. It runs on Mac, Windows, iOS, and Android, making it the <strong class="font-semibold">best free pdf extractor tool 2025 2026</strong> for zero-friction workflows.</li>
+                    <li><strong class="font-semibold">Multi-Format Versatility:</strong> Most basic software only splits PDFs. PageSlice merges, deletes pages, and converts Word docs, PowerPoints, and images simultaneously.</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
+            <footer class="border-t border-neutral-800/50 mt-8 pt-6 grid grid-cols-1 sm:grid-cols-3 gap-6 text-[11px]">
+              <div>
+                <h4 class="font-bold text-primary uppercase font-mono mb-1">How to Convert Photo to PDF on iPhone</h4>
+                <p class="font-inter leading-relaxed">Open PageSlice in Safari or Chrome, tap "Browse Files", select images from the gallery, arrange the order, and click "Extract".</p>
+              </div>
+              <div>
+                <h4 class="font-bold text-primary uppercase font-mono mb-1">How to Convert Word Document to PDF</h4>
+                <p class="font-inter leading-relaxed">Select your DOCX file, wait for local conversion to finish in your browser memory, and download the compiled file.</p>
+              </div>
+              <div>
+                <h4 class="font-bold text-primary uppercase font-mono mb-1">How to Delete PDF Pages</h4>
+                <p class="font-inter leading-relaxed">Drag your PDF, select only the pages you want to keep (effectively deleting the unselected ones), and click the extract button.</p>
+              </div>
+            </footer>
+          </article>
+
+          <!-- On-Page SEO FAQ Accordion/Deck -->
+          <section class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-8 rounded-2xl mt-8 font-mono text-left max-w-none">
+            <header class="border-b border-neutral-800/50 pb-6 mb-6">
+              <span class="text-[10px] text-primary uppercase tracking-widest font-bold">SUPPORT / FAQS</span>
+              <h2 class="text-xl font-bold text-primary uppercase mt-2">Frequently Asked Questions</h2>
+              <p class="text-xs text-mute font-inter mt-1 leading-relaxed">
+                Everything you need to know about extracting pages, merging files, and document privacy.
+              </p>
+            </header>
+
+            <div class="space-y-6 text-xs">
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> How can I remove pages from a PDF?</h3>
+                <p class="text-mute font-inter leading-relaxed">PageSlice makes removing pages from a PDF simple. Drag and drop your PDF file onto the page, check only the pages you want to keep, and then click the "Extract Selected Pages" button. The unchecked pages will be removed, creating a new PDF instantly on your device.</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> Can I delete pages from a PDF?</h3>
+                <p class="text-mute font-inter leading-relaxed">Yes, you can easily delete pages from any PDF document. Simply load the PDF into PageSlice, select the pages you want to keep, and compile the new document. The unselected pages are effectively deleted.</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> Is this Extract PDF tool free to use?</h3>
+                <p class="text-mute font-inter leading-relaxed">Yes! PageSlice is a 100% free online PDF maker and extractor. There are no subscriptions, registration requirements, file limits, or watermarks.</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> How to extract multiple pages from PDF?</h3>
+                <p class="text-mute font-inter leading-relaxed">To extract multiple pages, upload your PDF to PageSlice. You can select specific pages manually by clicking on their thumbnails, enter a page range (e.g., "1, 3, 5-8") in the Range Input box, or search for text content. When done, click "Extract Selected Pages".</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> Can I extract specific pages from a scanned PDF document?</h3>
+                <p class="text-mute font-inter leading-relaxed">Yes. PageSlice loads and processes scanned PDF documents locally in your browser, allowing you to select and extract any specific page.</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> How many PDF pages can I extract?</h3>
+                <p class="text-mute font-inter leading-relaxed">There are no page extraction limits. Since PageSlice works entirely client-side using your browser memory, you can extract as many pages as your computer or device can process.</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> Is it possible to extract pages from a PDF and save them as a new file?</h3>
+                <p class="text-mute font-inter leading-relaxed">Yes. When you click "Extract Selected Pages", PageSlice generates a new, separate PDF file in your browser memory and triggers an automatic download, saving the extracted pages as a new file.</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> Is my data safe and private when using the Extract PDF tool?</h3>
+                <p class="text-mute font-inter leading-relaxed">Absolutely. PageSlice is a privacy-first, client-side tool. Your documents are never uploaded to any server. All processing, decryption, conversion, and compilation occur locally on your machine.</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> How do I separate pages from a PDF?</h3>
+                <p class="text-mute font-inter leading-relaxed">Upload your PDF to PageSlice, choose the pages you wish to split or keep, and compile them. You can also add more files to merge them or rearrange their order.</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> How to merge PDF files?</h3>
+                <p class="text-mute font-inter leading-relaxed">To merge PDF files, drag and drop multiple PDF documents onto the PageSlice upload box. You can then drag to rearrange pages from different files into your desired order, select all of them, and click "Extract Selected Pages" to merge them into a single file.</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> How can I merge PDFs offline?</h3>
+                <p class="text-mute font-inter leading-relaxed">PageSlice is designed to work client-side. Once the page is loaded in your browser, the document processing code runs offline. Your files never leave your computer, allowing you to merge PDFs without an internet connection.</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> How can I merge PDF files on a Mac?</h3>
+                <p class="text-mute font-inter leading-relaxed">Open PageSlice in any web browser on your Mac, drag and drop the PDF files you want to combine, arrange the pages, and click "Extract Selected Pages" to save the merged document.</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> Can I merge PDFs on mobile devices?</h3>
+                <p class="text-mute font-inter leading-relaxed">Yes! PageSlice is fully responsive. You can open PageSlice in your mobile browser (such as Safari on iOS or Chrome on Android) and upload, arrange, and merge PDFs directly on your phone or tablet.</p>
+              </div>
+
+              <div class="border-b border-neutral-800/50 pb-6 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> How to merge multiple Word documents?</h3>
+                <p class="text-mute font-inter leading-relaxed">PageSlice supports DOCX files. Drag and drop multiple Word documents onto the page. They will be converted to PDF locally in your browser, allowing you to select, reorder, and merge pages from them into a single PDF.</p>
+              </div>
+
+              <div class="pb-2 text-left">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide mb-2"><span class="text-primary font-bold">Q /</span> Is it possible to merge PDF and JPG files together?</h3>
+                <p class="text-mute font-inter leading-relaxed">Yes! PageSlice lets you merge different formats simultaneously. You can upload PDFs, JPG/PNG images, Word documents, and PowerPoint slides in one session, arrange their pages in any order, and merge them into one PDF.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Schema JSON-LD for FAQ Page -->
+          <script type="application/ld+json" is:inline>
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "How can I remove pages from a PDF?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "PageSlice makes removing pages from a PDF simple. Drag and drop your PDF file onto the page, check only the pages you want to keep, and then click the \"Extract Selected Pages\" button. The unchecked pages will be removed, creating a new PDF instantly on your device."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I delete pages from a PDF?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, you can easily delete pages from any PDF document. Simply load the PDF into PageSlice, select the pages you want to keep, and compile the new document. The unselected pages are effectively deleted."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is this Extract PDF tool free to use?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes! PageSlice is a 100% free online PDF maker and extractor. There are no subscriptions, registration requirements, file limits, or watermarks."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How to extract multiple pages from PDF?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "To extract multiple pages, upload your PDF to PageSlice. You can select specific pages manually by clicking on their thumbnails, enter a page range (e.g., \"1, 3, 5-8\") in the Range Input box, or search for text content. When done, click \"Extract Selected Pages\"."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I extract specific pages from a scanned PDF document?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. PageSlice loads and processes scanned PDF documents locally in your browser, allowing you to select and extract any specific page."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How many PDF pages can I extract?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "There are no page extraction limits. Since PageSlice works entirely client-side using your browser memory, you can extract as many pages as your computer or device can process."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is it possible to extract pages from a PDF and save them as a new file?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. When you click \"Extract Selected Pages\", PageSlice generates a new, separate PDF file in your browser memory and triggers an automatic download, saving the extracted pages as a new file."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is my data safe and private when using the Extract PDF tool?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Absolutely. PageSlice is a privacy-first, client-side tool. Your documents are never uploaded to any server. All processing, decryption, conversion, and compilation occur locally on your machine."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do I separate pages from a PDF?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Upload your PDF to PageSlice, choose the pages you wish to split or keep, and compile them. You can also add more files to merge them or rearrange their order."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How to merge PDF files?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "To merge PDF files, drag and drop multiple PDF documents onto the PageSlice upload box. You can then drag to rearrange pages from different files into your desired order, select all of them, and click \"Extract Selected Pages\" to merge them into a single file."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How can I merge PDFs offline?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "PageSlice is designed to work client-side. Once the page is loaded in your browser, the document processing code runs offline. Your files never leave your computer, allowing you to merge PDFs without an internet connection."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How can I merge PDF files on a Mac?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Open PageSlice in any web browser on your Mac, drag and drop the PDF files you want to combine, arrange the pages, and click \"Extract Selected Pages\" to save the merged document."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I merge PDFs on mobile devices?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes! PageSlice is fully responsive. You can open PageSlice in your mobile browser (such as Safari on iOS or Chrome on Android) and upload, arrange, and merge PDFs directly on your phone or tablet."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How to merge multiple Word documents?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "PageSlice supports DOCX files. Drag and drop multiple Word documents onto the page. They will be converted to PDF locally in your browser, allowing you to select, reorder, and merge pages from them into a single PDF."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is it possible to merge PDF and JPG files together?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes! PageSlice lets you merge different formats simultaneously. You can upload PDFs, JPG/PNG images, Word documents, and PowerPoint slides in one session, arrange their pages in any order, and merge them into one PDF."
+                }
+              }
+            ]
+          }
+          </script>
+        </section>
+
+        <!-- STATE 2: Extraction Dashboard (Hidden initially) -->
+        <section id="dashboard-section" class="hidden w-full flex-1 flex flex-col animate-fade-in text-left">
+          
+          <!-- Control Panel Bar -->
+          <div class="border border-neutral-800 bg-canvas-soft/40 backdrop-blur-md rounded-2xl p-6 mb-8 flex flex-col gap-6">
+            
+            <!-- Row 1: Telemetry Readouts -->
+            <div class="flex flex-wrap items-center justify-between sm:justify-start gap-x-8 gap-y-4 pb-4 border-b border-neutral-800/50">
+              <div class="font-mono text-left">
+                <div class="text-[10px] text-mute uppercase tracking-widest">ACTIVE FILES</div>
+                <div id="metadata-filename" class="text-sm font-bold text-white truncate max-w-[280px] sm:max-w-[360px]">REPORT_2026.PDF</div>
+              </div>
+              
+              <div class="hidden sm:block h-8 w-[1px] bg-neutral-800"></div>
+
+              <div class="font-mono text-left">
+                <div class="text-[10px] text-mute uppercase tracking-widest">FILE SIZE</div>
+                <div id="metadata-filesize" class="text-sm text-white whitespace-nowrap">4.21 MB</div>
+              </div>
+
+              <div class="hidden sm:block h-8 w-[1px] bg-neutral-800"></div>
+
+              <div class="font-mono text-left">
+                <div class="text-[10px] text-mute uppercase tracking-widest">PAGES TOTAL</div>
+                <div id="metadata-total-pages" class="text-sm text-white whitespace-nowrap">12 Pages</div>
+              </div>
+            </div>
+
+            <!-- Row 2: Tactical Control Systems -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <!-- Left Actions Group -->
+              <div class="flex flex-wrap items-center gap-3 sm:gap-4 w-full lg:w-auto">
+                <!-- Quick Select Buttons -->
+                <div class="flex items-center justify-between sm:justify-start gap-1 sm:gap-2 border border-neutral-800 rounded-xl p-1 bg-canvas/50 w-full sm:w-auto">
+                  <button 
+                    id="select-all-btn" 
+                    class="flex-1 sm:flex-initial font-mono text-[10px] tracking-wider text-mute hover:text-primary px-3 py-2 rounded-lg hover:bg-neutral-900 transition-all uppercase cursor-pointer text-center"
+                  >
+                    All
+                  </button>
+                  <button 
+                    id="clear-selection-btn" 
+                    class="flex-1 sm:flex-initial font-mono text-[10px] tracking-wider text-mute hover:text-primary px-3 py-2 rounded-lg hover:bg-neutral-900 transition-all uppercase cursor-pointer text-center"
+                  >
+                    None
+                  </button>
+                  <button 
+                    id="invert-selection-btn" 
+                    class="flex-1 sm:flex-initial font-mono text-[10px] tracking-wider text-mute hover:text-primary px-3 py-2 rounded-lg hover:bg-neutral-900 transition-all uppercase cursor-pointer text-center"
+                  >
+                    Invert
+                  </button>
+                </div>
+
+                <!-- Range Input Box -->
+                <div class="relative w-full sm:w-auto">
+                  <input 
+                    type="text" 
+                    id="range-input" 
+                    placeholder="Range e.g. 1, 3, 5-8" 
+                    aria-label="Page selection range"
+                    class="font-mono text-xs bg-canvas border border-neutral-800 hover:border-neutral-700 focus:border-primary focus:outline-none rounded-xl px-4 py-3 w-full sm:w-[170px] text-white placeholder:text-neutral-600 transition-all"
+                  />
+                </div>
+
+                <!-- Real-Time Content Search Box -->
+                <div class="relative flex items-center w-full sm:w-auto">
+                  <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Search words e.g. report…" 
+                    aria-label="Search page content"
+                    class="font-mono text-xs bg-canvas border border-neutral-800 hover:border-neutral-700 focus:border-primary focus:outline-none rounded-xl pl-4 pr-16 py-3 w-full sm:w-[220px] text-white placeholder:text-neutral-600 transition-all"
+                  />
+                  <button 
+                    id="search-select-btn" 
+                    class="hidden absolute right-1.5 top-1.5 font-mono text-[9px] tracking-wider text-on-primary bg-primary hover:bg-primary-active px-2 py-1.5 rounded-lg transition-all uppercase font-bold cursor-pointer"
+                  >
+                    Select
+                  </button>
+                </div>
+              </div>
+
+              <!-- Right Actions Group -->
+              <div class="flex items-center justify-between sm:justify-end gap-3 w-full lg:w-auto border-t lg:border-t-0 border-neutral-800/40 pt-4 lg:pt-0">
+                <!-- Add Files button -->
+                <button 
+                  id="add-files-btn" 
+                  class="flex-1 sm:flex-initial border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-xl px-4 py-3 text-xs font-mono uppercase cursor-pointer text-center font-bold"
+                >
+                  Add Files
+                </button>
+                <input type="file" id="add-files-input" class="hidden" accept=".pdf,.docx,.pptx,.png,.jpg,.jpeg" multiple />
+
+                <!-- Reset / Choose another file button -->
+                <button 
+                  id="reset-btn" 
+                  class="flex-1 sm:flex-initial border border-neutral-800 hover:border-red-500/50 hover:bg-red-500/10 text-mute hover:text-red-400 transition-all rounded-xl px-4 py-3 text-xs font-mono uppercase cursor-pointer text-center"
+                >
+                  Change File
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Page Cards Grid -->
+          <div class="flex-1 min-h-[400px] mb-24">
+            <div 
+              id="pages-grid" 
+              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6"
+            >
+              <!-- Cards populated dynamically -->
+            </div>
+          </div>
+        </section>
+
+      </div>
+      <Footer />
+    </div>
+
+    <!-- STATE 3: Local Decryption Console Modal -->
+    <div 
+      id="decrypt-modal" 
+      class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas-soft/80 backdrop-blur-md"
+    >
+      <div class="border border-neutral-800 bg-canvas p-6 sm:p-8 rounded-2xl max-w-md w-full text-center relative overflow-hidden shadow-2xl animate-fade-in">
+        <!-- Matrix grid overlay -->
+        <div class="absolute inset-0 spacex-grid opacity-5 pointer-events-none"></div>
+
+        <div class="relative z-10 flex flex-col items-center">
+          <div class="h-14 w-14 mb-4 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center text-primary glow-primary">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+
+          <h2 class="text-md font-mono font-bold tracking-widest text-white uppercase mb-2">
+            ACCESS RESTRICTED
+          </h2>
+          <p class="text-xs text-mute font-mono uppercase tracking-wider mb-6">
+            Document <span id="decrypt-filename" class="text-primary font-bold">file.pdf</span> requires decryption code
+          </p>
+
+          <!-- Input fields -->
+          <div class="w-full flex flex-col gap-4">
+            <input 
+              type="password" 
+              id="decrypt-password-input" 
+              placeholder="ENTER DECRYPTION PASSWORD…" 
+              aria-label="Enter decryption password"
+              class="font-mono text-center text-sm bg-canvas-soft border border-neutral-800 hover:border-neutral-700 focus:border-primary focus:outline-none rounded-xl px-4 py-3 text-white placeholder:text-neutral-700 transition-all uppercase tracking-widest"
+            />
+            <div id="decrypt-error" class="hidden text-xs text-negative font-mono uppercase tracking-wider">
+              AUTHORIZATION DENIED - RETRY
+            </div>
+            
+            <div class="flex items-center gap-3 mt-2">
+              <button 
+                id="decrypt-cancel-btn" 
+                class="flex-1 border border-neutral-800 hover:border-red-500/50 hover:bg-red-500/10 text-mute hover:text-red-400 transition-all rounded-xl py-3 text-xs font-mono uppercase tracking-wider"
+              >
+                Abort
+              </button>
+              <button 
+                id="decrypt-submit-btn" 
+                class="flex-1 bg-primary text-on-primary hover:bg-primary-active active:scale-95 transition-all rounded-xl py-3 text-xs font-mono font-bold uppercase tracking-wider glow-primary hover:glow-primary-strong"
+              >
+                Unlock
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticky Bottom Bar -->
+    <footer 
+      id="sticky-footer" 
+      class="fixed bottom-0 left-0 right-0 border-t border-neutral-800 bg-canvas/80 backdrop-blur-lg translate-y-full transition-transform duration-300 ease-in-out z-50 py-4 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]"
+    >
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        
+        <!-- Selection Summary -->
+        <div class="flex items-center gap-4 font-mono text-left">
+          <div class="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+            <svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div>
+            <div class="text-[10px] text-mute uppercase tracking-widest">Compiler Queue</div>
+            <div class="text-sm font-bold text-white">
+              <span id="selected-count-label" class="text-primary">0</span> pages selected for extraction
+            </div>
+          </div>
+        </div>
+
+        <!-- Extract CTA & Loader -->
+        <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          <!-- Inline loader -->
+          <div id="compiling-loader" class="hidden items-center justify-center gap-2 font-mono text-xs text-primary animate-pulse py-1 sm:py-0">
+            <svg class="animate-spin h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>COMPILING…</span>
+          </div>
+
+          <!-- Main compile button -->
+          <button 
+            id="extract-btn" 
+            class="w-full sm:w-auto bg-primary text-on-primary hover:bg-primary-active active:scale-95 transition-all rounded-xl px-8 py-3 text-sm font-bold tracking-wider uppercase border border-primary/20 cursor-pointer shadow-[0_0_15px_rgba(159,232,112,0.2)] hover:shadow-[0_0_25px_rgba(159,232,112,0.4)]"
+          >
+            Extract Selected Pages
+          </button>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Dotted SpaceX matrix overlay -->
+    <div class="absolute inset-0 spacex-grid opacity-10 pointer-events-none"></div>
+
+    <!-- Radial dark mask to create cockpit feel -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#121310_100%)] pointer-events-none"></div>
+  </main>
 </Layout>
+
+<style>
+  /* Local stylesheet rules for premium sci-fi telemetry design */
+  .spacex-bg {
+    background-color: #121310;
+  }
+  .spacex-grid {
+    background-size: 32px 32px;
+    background-image: 
+      linear-gradient(to right, rgba(159, 232, 112, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(159, 232, 112, 0.03) 1px, transparent 1px);
+  }
+  .glow-primary {
+    box-shadow: 0 0 15px rgba(159, 232, 112, 0.15);
+  }
+  .glow-primary-strong {
+    box-shadow: 0 0 25px rgba(159, 232, 112, 0.35);
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+</style>
+
+<script>
+  // Import PDF-Lib library compiled client-side by Vite
+  import { PDFDocument, StandardFonts } from 'pdf-lib';
+
+  // Virtual Page layout interface
+  interface VirtualPage {
+    id: string; // unique page identification key
+    fileIndex: number;
+    pageIndex: number;
+    fileName: string;
+    text: string;
+  }
+
+  // State
+  let loadedFiles: File[] = [];
+  let loadedPdfDocs: any[] = [];
+  let loadedPdfJsDocs: any[] = [];
+  let virtualPages: VirtualPage[] = [];
+  let pageOrder: number[] = [];
+  let selectedPages = new Set<string>();
+
+  // Decryption state tracking
+  let pendingFilesList: File[] | null = null;
+  let pendingFileIndex = 0;
+  let pendingFile: File | null = null;
+  let filePasswords: { [key: number]: string } = {};
+  let pendingIsAppend = false;
+
+  // Element Selectors
+  const dropzone = document.getElementById('dropzone') as HTMLElement;
+  const pdfInput = document.getElementById('pdf-input') as HTMLInputElement;
+  const browseBtn = document.getElementById('browse-btn') as HTMLButtonElement;
+  const dropzoneSection = document.getElementById('dropzone-section') as HTMLElement;
+  const dashboardSection = document.getElementById('dashboard-section') as HTMLElement;
+  const errorBanner = document.getElementById('error-banner') as HTMLElement;
+  const errorMessage = document.getElementById('error-message') as HTMLElement;
+  const closeErrorBtn = document.getElementById('close-error-btn') as HTMLButtonElement;
+  
+  // Metadata Panel Selectors
+  const metaFilename = document.getElementById('metadata-filename') as HTMLElement;
+  const metaFilesize = document.getElementById('metadata-filesize') as HTMLElement;
+  const metaTotalPages = document.getElementById('metadata-total-pages') as HTMLElement;
+
+  // Grid and Controls
+  const pagesGrid = document.getElementById('pages-grid') as HTMLElement;
+  const selectAllBtn = document.getElementById('select-all-btn') as HTMLButtonElement;
+  const clearSelectionBtn = document.getElementById('clear-selection-btn') as HTMLButtonElement;
+  const invertSelectionBtn = document.getElementById('invert-selection-btn') as HTMLButtonElement;
+  const rangeInput = document.getElementById('range-input') as HTMLInputElement;
+  const searchInput = document.getElementById('search-input') as HTMLInputElement;
+  const searchSelectBtn = document.getElementById('search-select-btn') as HTMLButtonElement;
+  const resetBtn = document.getElementById('reset-btn') as HTMLButtonElement;
+  const addFilesBtn = document.getElementById('add-files-btn') as HTMLButtonElement;
+  const addFilesInput = document.getElementById('add-files-input') as HTMLInputElement;
+
+  // Decryption Overlay Elements
+  const decryptModal = document.getElementById('decrypt-modal') as HTMLElement;
+  const decryptFilename = document.getElementById('decrypt-filename') as HTMLElement;
+  const decryptPasswordInput = document.getElementById('decrypt-password-input') as HTMLInputElement;
+  const decryptError = document.getElementById('decrypt-error') as HTMLElement;
+  const decryptCancelBtn = document.getElementById('decrypt-cancel-btn') as HTMLButtonElement;
+  const decryptSubmitBtn = document.getElementById('decrypt-submit-btn') as HTMLButtonElement;
+
+  // Sticky Action Footer
+  const stickyFooter = document.getElementById('sticky-footer') as HTMLElement;
+  const selectedCountLabel = document.getElementById('selected-count-label') as HTMLElement;
+  const extractBtn = document.getElementById('extract-btn') as HTMLButtonElement;
+  const compilingLoader = document.getElementById('compiling-loader') as HTMLElement;
+
+  // Initialize
+  setupEventListeners();
+
+  function setupEventListeners() {
+    // File inputs
+    browseBtn.addEventListener('click', () => pdfInput.click());
+    pdfInput.addEventListener('change', handleFileSelect);
+
+    // Error banner close
+    closeErrorBtn.addEventListener('click', hideError);
+
+    // Drag-and-drop actions
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, unhighlight, false);
+    });
+
+    dropzone.addEventListener('drop', handleDrop, false);
+
+    // Selection buttons
+    selectAllBtn.addEventListener('click', selectAll);
+    clearSelectionBtn.addEventListener('click', clearSelection);
+    invertSelectionBtn.addEventListener('click', invertSelection);
+
+    // Inputs
+    rangeInput.addEventListener('input', handleRangeInput);
+    searchInput.addEventListener('input', handleSearchInput);
+
+    // Add Files flow
+    addFilesBtn.addEventListener('click', () => addFilesInput.click());
+    addFilesInput.addEventListener('change', handleAddFilesSelect);
+
+    // Dashboard drag and drop files to append
+    dashboardSection.addEventListener('dragover', (e) => {
+      if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+        e.preventDefault();
+        dashboardSection.classList.add('border-primary/30', 'bg-primary/5');
+      }
+    });
+
+    dashboardSection.addEventListener('dragleave', () => {
+      dashboardSection.classList.remove('border-primary/30', 'bg-primary/5');
+    });
+
+    dashboardSection.addEventListener('drop', (e) => {
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        e.preventDefault();
+        dashboardSection.classList.remove('border-primary/30', 'bg-primary/5');
+        processFiles(e.dataTransfer.files, true);
+      }
+    });
+
+    // Reset flow
+    resetBtn.addEventListener('click', resetApp);
+
+    // PDF Compile Execution
+    extractBtn.addEventListener('click', executeExtraction);
+
+    // Decryption Dialog submissions
+    decryptSubmitBtn.addEventListener('click', submitPassword);
+    decryptPasswordInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') submitPassword();
+    });
+    decryptCancelBtn.addEventListener('click', abortDecryption);
+  }
+
+  // File Drag-Drop Event Helpers
+  function highlight(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    dropzone.classList.add('border-primary/60', 'scale-[1.01]', 'bg-canvas-soft/55');
+  }
+
+  function unhighlight(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    dropzone.classList.remove('border-primary/60', 'scale-[1.01]', 'bg-canvas-soft/55');
+  }
+
+  function handleDrop(e: DragEvent) {
+    const dt = e.dataTransfer;
+    if (dt && dt.files && dt.files.length > 0) {
+      processFiles(dt.files);
+    }
+  }
+
+  function handleFileSelect(e: Event) {
+    const target = e.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      processFiles(target.files, false);
+    }
+  }
+
+  function handleAddFilesSelect(e: Event) {
+    const target = e.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      processFiles(target.files, true);
+    }
+  }
+
+  // DOCX to PDF converter client-side using XML parsing via JSZip
+  async function convertDocxToPdf(arrayBuffer: ArrayBuffer): Promise<ArrayBuffer> {
+    // @ts-ignore
+    const JSZip = window.JSZip;
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const docXml = await zip.file("word/document.xml").async("string");
+    
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(docXml, "text/xml");
+    const paragraphs = xmlDoc.getElementsByTagName("w:p");
+    
+    const lines: string[] = [];
+    for (let i = 0; i < paragraphs.length; i++) {
+      const p = paragraphs[i];
+      const text = p.textContent || '';
+      
+      const words = text.split(/\s+/);
+      let currentLine = '';
+      for (const word of words) {
+        if ((currentLine + ' ' + word).length > 75) {
+          lines.push(currentLine.trim());
+          currentLine = word;
+        } else {
+          currentLine = currentLine ? currentLine + ' ' + word : word;
+        }
+      }
+      if (currentLine) {
+        lines.push(currentLine.trim());
+      }
+      lines.push('');
+    }
+
+    const newPdfDoc = await PDFDocument.create();
+    const font = await newPdfDoc.embedFont(StandardFonts.Helvetica);
+    const linesPerPage = 35;
+    const pageCount = Math.ceil(lines.length / linesPerPage) || 1;
+
+    for (let p = 0; p < pageCount; p++) {
+      const page = newPdfDoc.addPage([612, 792]);
+      const startIndex = p * linesPerPage;
+      const pageLines = lines.slice(startIndex, startIndex + linesPerPage);
+      
+      pageLines.forEach((line, index) => {
+        if (!line.trim()) return;
+        page.drawText(line, {
+          x: 50,
+          y: 730 - index * 18,
+          size: 10.5,
+          font: font,
+          color: { type: 'RGB', red: 0.08, green: 0.09, blue: 0.08 }
+        });
+      });
+    }
+
+    return await newPdfDoc.save();
+  }
+
+  // PPTX to PDF converter client-side using slides XML parsing via JSZip
+  async function convertPptxToPdf(arrayBuffer: ArrayBuffer): Promise<ArrayBuffer> {
+    // @ts-ignore
+    const JSZip = window.JSZip;
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    
+    const slideFiles = Object.keys(zip.files).filter(name => name.startsWith("ppt/slides/slide") && name.endsWith(".xml"));
+    slideFiles.sort((a, b) => {
+      const numA = parseInt(a.replace(/[^0-9]/g, ""), 10);
+      const numB = parseInt(b.replace(/[^0-9]/g, ""), 10);
+      return numA - numB;
+    });
+
+    const newPdfDoc = await PDFDocument.create();
+    const font = await newPdfDoc.embedFont(StandardFonts.Helvetica);
+
+    if (slideFiles.length === 0) {
+      const page = newPdfDoc.addPage([792, 612]);
+      page.drawText("EMPTY PRESENTATION SLIDES", { x: 100, y: 300, size: 24, font });
+    }
+
+    for (const slideFile of slideFiles) {
+      const slideXml = await zip.file(slideFile).async("string");
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(slideXml, "text/xml");
+      
+      const textElements = xmlDoc.getElementsByTagName("a:t");
+      let slideText = "";
+      for (let i = 0; i < textElements.length; i++) {
+        slideText += textElements[i].textContent + " ";
+      }
+
+      const page = newPdfDoc.addPage([792, 612]);
+      page.drawRectangle({
+        x: 20,
+        y: 20,
+        width: 752,
+        height: 572,
+        borderWidth: 1,
+        borderColor: { type: 'RGB', red: 0.85, green: 0.85, blue: 0.85 },
+        color: { type: 'RGB', red: 0.98, green: 0.98, blue: 0.98 }
+      });
+
+      const words = slideText.trim().split(/\s+/);
+      const lines: string[] = [];
+      let currentLine = '';
+      for (const word of words) {
+        if ((currentLine + ' ' + word).length > 90) {
+          lines.push(currentLine.trim());
+          currentLine = word;
+        } else {
+          currentLine = currentLine ? currentLine + ' ' + word : word;
+        }
+      }
+      if (currentLine) {
+        lines.push(currentLine.trim());
+      }
+
+      lines.slice(0, 22).forEach((line, index) => {
+        page.drawText(line, {
+          x: 50,
+          y: 530 - index * 22,
+          size: 12.5,
+          font: font,
+          color: { type: 'RGB', red: 0.1, green: 0.1, blue: 0.1 }
+        });
+      });
+    }
+
+    return await newPdfDoc.save();
+  }
+
+  // Image to PDF compilation client-side
+  async function convertImageToPdf(arrayBuffer: ArrayBuffer, fileName: string): Promise<ArrayBuffer> {
+    const newPdfDoc = await PDFDocument.create();
+    let image;
+    
+    if (fileName.toLowerCase().endsWith('.png')) {
+      image = await newPdfDoc.embedPng(arrayBuffer);
+    } else {
+      image = await newPdfDoc.embedJpg(arrayBuffer);
+    }
+
+    const { width, height } = image.scale(0.8);
+    const page = newPdfDoc.addPage([width, height]);
+    
+    page.drawImage(image, {
+      x: 0,
+      y: 0,
+      width,
+      height
+    });
+
+    return await newPdfDoc.save();
+  }
+
+  // Core Processing Flow for Multiple Files
+  async function processFiles(files: FileList | File[], append = false) {
+    // Show temporary spinner in button
+    const activeBtn = append ? addFilesBtn : browseBtn;
+    if (activeBtn) {
+      activeBtn.textContent = 'LOADING…';
+      activeBtn.disabled = true;
+    }
+    hideError();
+
+    if (!append) {
+      // Reset states
+      loadedFiles = [];
+      loadedPdfDocs = [];
+      loadedPdfJsDocs = [];
+      virtualPages = [];
+      pageOrder = [];
+      selectedPages.clear();
+      filePasswords = {};
+    }
+
+    const newFilesArray = Array.from(files);
+    const startIndex = loadedFiles.length;
+    
+    // Add to loaded files list
+    if (append) {
+      loadedFiles = [...loadedFiles, ...newFilesArray];
+    } else {
+      loadedFiles = newFilesArray;
+    }
+
+    let totalBytes = loadedFiles.reduce((acc, f) => acc + f.size, 0);
+
+    try {
+      // Process new files sequentially
+      for (let i = 0; i < newFilesArray.length; i++) {
+        const file = newFilesArray[i];
+        const f = startIndex + i; // absolute file index
+        
+        if (!/\.(pdf|docx|pptx|png|jpe?g)$/i.test(file.name)) {
+          showError(`FILE FORMAT ERROR: "${file.name}" is not supported. Use PDF, DOCX, PPTX, or Images.`);
+          return;
+        }
+
+        let arrayBuffer = await file.arrayBuffer();
+
+        // Perform client-side conversions if not PDF
+        if (file.name.toLowerCase().endsWith('.docx')) {
+          arrayBuffer = await convertDocxToPdf(arrayBuffer);
+        } else if (file.name.toLowerCase().endsWith('.pptx')) {
+          arrayBuffer = await convertPptxToPdf(arrayBuffer);
+        } else if (/\.(png|jpe?g)$/i.test(file.name)) {
+          arrayBuffer = await convertImageToPdf(arrayBuffer, file.name);
+        }
+
+        // Load PDF via pdf-lib for compilation (slice buffer to avoid detachment)
+        const libBuffer = arrayBuffer.slice(0);
+        const filePassword = filePasswords[f] || '';
+        let pdfLibDoc;
+        try {
+          pdfLibDoc = await PDFDocument.load(libBuffer, { 
+            updateMetadata: false,
+            password: filePassword
+          });
+        } catch (libErr: any) {
+          if (libErr.message.includes('Password') || libErr.message.includes('encrypted') || libErr.message.includes('decrypt')) {
+            showDecryptionPromptForFile(file, newFilesArray, f, append);
+            return;
+          }
+          throw libErr;
+        }
+
+        const filePagesCount = pdfLibDoc.getPageCount();
+        if (filePagesCount === 0) continue;
+
+        // Load PDF via PDF.js for rendering thumbnails
+        // @ts-ignore
+        const pdfjsLib = window.pdfjsLib;
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const jsDocBuffer = arrayBuffer.slice(0);
+        
+        let pdfJsDoc;
+        try {
+          const loadingTask = pdfjsLib.getDocument({ 
+            data: jsDocBuffer,
+            password: filePassword
+          });
+          pdfJsDoc = await loadingTask.promise;
+        } catch (jsErr: any) {
+          if (jsErr.name === 'PasswordException') {
+            showDecryptionPromptForFile(file, newFilesArray, f, append);
+            return;
+          }
+          throw jsErr;
+        }
+
+        loadedPdfDocs[f] = pdfLibDoc;
+        loadedPdfJsDocs[f] = pdfJsDoc;
+
+        // Extract text and build VirtualPage metadata
+        const oldVirtualPagesLength = virtualPages.length;
+        const newVirtualPages: VirtualPage[] = [];
+        for (let p = 0; p < filePagesCount; p++) {
+          let textStr = '';
+          try {
+            const page = await pdfJsDoc.getPage(p + 1);
+            const textObj = await page.getTextContent();
+            textStr = textObj.items.map((item: any) => item.str).join(' ');
+          } catch (err) {
+            console.error(`Error extracting page text:`, err);
+          }
+
+          const pageId = `${f}-${p}`;
+          newVirtualPages.push({
+            id: pageId,
+            fileIndex: f,
+            pageIndex: p,
+            fileName: file.name,
+            text: textStr.toLowerCase()
+          });
+        }
+
+        virtualPages = [...virtualPages, ...newVirtualPages];
+        
+        // Append new page indices to the visual order
+        const newPageIndices = Array.from(
+          { length: newVirtualPages.length }, 
+          (_, idx) => oldVirtualPagesLength + idx
+        );
+        pageOrder = [...pageOrder, ...newPageIndices];
+      }
+
+      const totalVirtualPages = virtualPages.length;
+      if (totalVirtualPages === 0) {
+        throw new Error('No pages found in uploaded files.');
+      }
+
+      // Update Metadata readout UI
+      let activeFileNameText = '';
+      if (loadedFiles.length === 1) {
+        activeFileNameText = loadedFiles[0].name.toUpperCase();
+      } else {
+        const firstFileBase = loadedFiles[0].name.replace(/\.[^/.]+$/, "").toUpperCase();
+        activeFileNameText = `${firstFileBase} + ${loadedFiles.length - 1} OTHER FILE${loadedFiles.length > 2 ? 'S' : ''}`;
+      }
+
+      metaFilename.textContent = activeFileNameText;
+      metaFilesize.textContent = formatBytes(totalBytes);
+      metaTotalPages.textContent = `${totalVirtualPages} Page${totalVirtualPages > 1 ? 's' : ''}`;
+
+      // Reset control fields if not appending
+      if (!append) {
+        rangeInput.value = '';
+        searchInput.value = '';
+        searchSelectBtn.classList.add('hidden');
+      }
+
+      // Populate interactive grid
+      renderPagesGrid();
+      updateStickyFooter();
+
+      // View Transitions / Show dashboard
+      dropzoneSection.classList.add('hidden');
+      dashboardSection.classList.remove('hidden');
+    } catch (err) {
+      console.error(err);
+      showError('PARSING ERROR: Unable to read file data locally. Document may be encrypted or corrupted.');
+      resetState();
+    } finally {
+      if (activeBtn) {
+        activeBtn.textContent = append ? 'Add Files' : 'Browse Files';
+        activeBtn.disabled = false;
+      }
+    }
+  }
+
+  function renderPagesGrid() {
+    pagesGrid.innerHTML = '';
+    
+    pageOrder.forEach((virtualIndex, visualIndex) => {
+      const vp = virtualPages[virtualIndex];
+      const card = document.createElement('div');
+      
+      // Tailwind CSS Classes for the technical SpaceX page card
+      card.className = `group aspect-[3/4] relative bg-canvas-soft/20 hover:bg-canvas-soft border border-neutral-800 hover:border-neutral-700 hover:scale-[1.02] cursor-pointer rounded-xl overflow-hidden transition-all duration-300 select-none flex flex-col p-3`;
+      card.setAttribute('data-page-index', virtualIndex.toString());
+      card.setAttribute('data-visual-index', visualIndex.toString());
+      card.id = `page-card-${vp.id}`;
+      card.draggable = true;
+
+      // Card layout: show visual index, original index, and the file name it belongs to
+      card.innerHTML = `
+        <!-- Drag Handle / Dot icon in top-left -->
+        <div class="absolute top-2.5 left-2.5 w-5 h-5 rounded-full border border-neutral-800/60 flex items-center justify-center bg-canvas/30 transition-all card-drag-handle opacity-0 group-hover:opacity-100 cursor-grab active:cursor-grabbing z-20">
+          <svg class="h-3 w-3 text-mute" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </div>
+
+        <!-- Selection checkmark indicator -->
+        <div class="absolute top-2.5 right-2.5 w-5 h-5 rounded-full border border-neutral-800 flex items-center justify-center bg-canvas-soft/80 transition-all card-check-badge z-20">
+          <svg class="h-3 w-3 text-on-primary hidden check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+
+        <!-- Render Canvas Container (actual preview canvas) -->
+        <div class="flex-1 w-full aspect-[3/4] overflow-hidden rounded bg-neutral-950 flex items-center justify-center border border-neutral-900 relative">
+          <canvas id="canvas-page-${vp.id}" class="max-w-full max-h-full object-contain pointer-events-none transition-all duration-300 group-hover:scale-[1.03]"></canvas>
+          <div id="loader-page-${vp.id}" class="absolute inset-0 flex items-center justify-center bg-neutral-950 font-mono text-[9px] text-mute animate-pulse uppercase">RENDER…</div>
+        </div>
+
+        <!-- Divider line -->
+        <div class="h-[1px] bg-neutral-800/80 my-2.5"></div>
+
+        <!-- Monospace index footer containing multi-file references -->
+        <div class="flex flex-col gap-0.5 text-left">
+          <div class="text-[8px] font-mono text-primary truncate max-w-full uppercase tracking-wider" title="${vp.fileName}">
+            ${vp.fileName}
+          </div>
+          <div class="flex justify-between items-center text-[10px] font-mono text-mute mt-auto">
+            <span>PAGE ${String(vp.pageIndex + 1).padStart(2, '0')}</span>
+            <span class="text-[9px] opacity-0 group-hover:opacity-100 transition-opacity text-primary">DRAG</span>
+          </div>
+        </div>
+      `;
+
+      // Click card selects it (unless drag handle is targeted)
+      card.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('.card-drag-handle')) return;
+        togglePageSelection(vp.id);
+      });
+
+      // Hook up native HTML5 Drag and Drop event listeners
+      setupDragEvents(card, virtualIndex);
+      
+      pagesGrid.appendChild(card);
+
+      // Re-sync visual selections
+      setCardSelectedVisual(vp.id, selectedPages.has(vp.id));
+
+      // Async render call using the correct pdfJsDoc object for this virtual page
+      renderPageThumbnail(loadedPdfJsDocs[vp.fileIndex], vp.pageIndex, vp.id);
+    });
+  }
+
+  // HTML5 Drag-and-drop mechanics
+  let draggedIndex: number | null = null;
+
+  function setupDragEvents(card: HTMLElement, virtualIndex: number) {
+    card.addEventListener('dragstart', (e) => {
+      draggedIndex = virtualIndex;
+      card.classList.add('opacity-50', 'scale-95', 'border-primary/50');
+      if (e.dataTransfer) {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', virtualIndex.toString());
+      }
+    });
+
+    card.addEventListener('dragend', () => {
+      card.classList.remove('opacity-50', 'scale-95', 'border-primary/50');
+      
+      // Clean up drop outlines across cards
+      const allCards = pagesGrid.querySelectorAll('[id^="page-card-"]');
+      allCards.forEach(c => c.classList.remove('border-primary'));
+    });
+
+    card.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (draggedIndex === null || draggedIndex === virtualIndex) return;
+
+      if (e.dataTransfer) {
+        e.dataTransfer.dropEffect = 'move';
+      }
+      card.classList.add('border-primary/50');
+    });
+
+    card.addEventListener('dragleave', () => {
+      if (draggedIndex === null || draggedIndex === virtualIndex) return;
+      card.classList.remove('border-primary/50');
+    });
+
+    card.addEventListener('drop', (e) => {
+      e.preventDefault();
+      card.classList.remove('border-primary/50');
+      
+      if (draggedIndex === null || draggedIndex === virtualIndex) return;
+
+      const fromIndex = pageOrder.indexOf(draggedIndex);
+      const toIndex = pageOrder.indexOf(virtualIndex);
+
+      if (fromIndex !== -1 && toIndex !== -1) {
+        // Swap indices sequences
+        pageOrder.splice(fromIndex, 1);
+        pageOrder.splice(toIndex, 0, draggedIndex);
+
+        // Re-draw grid to visually map new order sequence
+        renderPagesGrid();
+      }
+    });
+  }
+
+  async function renderPageThumbnail(pdfJsDoc: any, pageIndex: number, pageId: string) {
+    try {
+      const page = await pdfJsDoc.getPage(pageIndex + 1);
+      const canvas = document.getElementById(`canvas-page-${pageId}`) as HTMLCanvasElement;
+      if (!canvas) return;
+
+      const context = canvas.getContext('2d');
+      if (!context) return;
+
+      // Adjust scale to a standard thumbnail width (180px)
+      const desiredWidth = 180;
+      const originalViewport = page.getViewport({ scale: 1 });
+      const scale = desiredWidth / originalViewport.width;
+      const viewport = page.getViewport({ scale });
+
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport
+      };
+
+      await page.render(renderContext).promise;
+
+      // Hide loader
+      const loader = document.getElementById(`loader-page-${pageId}`);
+      if (loader) loader.classList.add('hidden');
+    } catch (err) {
+      console.error(`Error rendering page thumbnail ${pageId}:`, err);
+      const loader = document.getElementById(`loader-page-${pageId}`);
+      if (loader) loader.textContent = 'ERROR';
+    }
+  }
+
+  // Decryption Prompt Modal Helpers
+  function showDecryptionPromptForFile(file: File, files: File[], index: number, append = false) {
+    pendingFile = file;
+    pendingFilesList = files;
+    pendingFileIndex = index;
+    pendingIsAppend = append;
+    
+    decryptFilename.textContent = file.name;
+    decryptPasswordInput.value = '';
+    decryptError.classList.add('hidden');
+    decryptModal.classList.remove('hidden');
+    decryptPasswordInput.focus();
+
+    // Reset browse button state
+    const activeBtn = append ? addFilesBtn : browseBtn;
+    if (activeBtn) {
+      activeBtn.textContent = append ? 'Add Files' : 'Browse Files';
+      activeBtn.disabled = false;
+    }
+  }
+
+  function hideDecryptionPrompt() {
+    decryptModal.classList.add('hidden');
+    pendingFile = null;
+    pendingFilesList = null;
+  }
+
+  function submitPassword() {
+    const password = decryptPasswordInput.value;
+    if (pendingFile && pendingFilesList) {
+      decryptError.classList.add('hidden');
+      filePasswords[pendingFileIndex] = password;
+      
+      if (pendingIsAppend) {
+        const countBeforeAppend = pendingFileIndex - pendingFilesList.indexOf(pendingFile);
+        loadedFiles = loadedFiles.slice(0, countBeforeAppend);
+      }
+      
+      processFiles(pendingFilesList, pendingIsAppend);
+    }
+  }
+
+  function abortDecryption() {
+    hideDecryptionPrompt();
+    resetState();
+    pdfInput.value = '';
+    addFilesInput.value = '';
+  }
+
+  function togglePageSelection(pageId: string) {
+    if (selectedPages.has(pageId)) {
+      selectedPages.delete(pageId);
+      setCardSelectedVisual(pageId, false);
+    } else {
+      selectedPages.add(pageId);
+      setCardSelectedVisual(pageId, true);
+    }
+    
+    // De-synchronize range input
+    rangeInput.value = '';
+    updateStickyFooter();
+  }
+
+  function setCardSelectedVisual(pageId: string, isSelected: boolean) {
+    const card = document.getElementById(`page-card-${pageId}`);
+    if (!card) return;
+
+    const badge = card.querySelector('.card-check-badge') as HTMLElement;
+    const checkIcon = card.querySelector('.check-icon') as HTMLElement;
+
+    if (isSelected) {
+      card.classList.remove('border-neutral-800', 'hover:border-neutral-700', 'bg-canvas-soft/20');
+      card.classList.add('border-primary', 'bg-primary/5', 'shadow-[0_0_15px_rgba(159,232,112,0.1)]');
+      
+      badge.classList.remove('border-neutral-800', 'bg-canvas-soft/80');
+      badge.classList.add('bg-primary', 'border-primary');
+      checkIcon.classList.remove('hidden');
+    } else {
+      card.classList.remove('border-primary', 'bg-primary/5', 'shadow-[0_0_15px_rgba(159,232,112,0.1)]');
+      card.classList.add('border-neutral-800', 'bg-canvas-soft/20');
+      
+      badge.classList.remove('bg-primary', 'border-primary');
+      badge.classList.add('border-neutral-800', 'bg-canvas-soft/80');
+      checkIcon.classList.add('hidden');
+    }
+  }
+
+  // Quick Action Selection Helpers
+  function selectAll() {
+    selectedPages.clear();
+    virtualPages.forEach((vp) => {
+      selectedPages.add(vp.id);
+      setCardSelectedVisual(vp.id, true);
+    });
+    rangeInput.value = '';
+    updateStickyFooter();
+  }
+
+  // Quick Action Clear Selection Helpers
+  function clearSelection() {
+    selectedPages.clear();
+    virtualPages.forEach((vp) => {
+      setCardSelectedVisual(vp.id, false);
+    });
+    rangeInput.value = '';
+    updateStickyFooter();
+  }
+
+  function invertSelection() {
+    virtualPages.forEach((vp) => {
+      if (selectedPages.has(vp.id)) {
+        selectedPages.delete(vp.id);
+        setCardSelectedVisual(vp.id, false);
+      } else {
+        selectedPages.add(vp.id);
+        setCardSelectedVisual(vp.id, true);
+      }
+    });
+    rangeInput.value = '';
+    updateStickyFooter();
+  }
+
+  // Parse Range text fields e.g., '1, 3, 5-8' based on visual order
+  function handleRangeInput(e: Event) {
+    const value = (e.target as HTMLInputElement).value;
+    
+    // Clear visual styles
+    virtualPages.forEach((vp) => {
+      setCardSelectedVisual(vp.id, false);
+    });
+    selectedPages.clear();
+
+    if (!value.trim()) {
+      updateStickyFooter();
+      return;
+    }
+
+    const totalVirtualPages = virtualPages.length;
+    const parts = value.split(',');
+    for (const part of parts) {
+      const trimmed = part.trim();
+      if (!trimmed) continue;
+
+      if (/^\d+$/.test(trimmed)) {
+        const visualNum = parseInt(trimmed, 10);
+        if (visualNum >= 1 && visualNum <= totalVirtualPages) {
+          const virtualIndex = pageOrder[visualNum - 1];
+          const vp = virtualPages[virtualIndex];
+          selectedPages.add(vp.id);
+          setCardSelectedVisual(vp.id, true);
+        }
+      } else if (/^\d+-\d+$/.test(trimmed)) {
+        const [startStr, endStr] = trimmed.split('-');
+        let start = parseInt(startStr, 10);
+        let end = parseInt(endStr, 10);
+        
+        if (isNaN(start) || isNaN(end)) continue;
+        
+        if (start > end) {
+          [start, end] = [end, start];
+        }
+
+        for (let p = start; p <= end; p++) {
+          if (p >= 1 && p <= totalVirtualPages) {
+            const virtualIndex = pageOrder[p - 1];
+            const vp = virtualPages[virtualIndex];
+            selectedPages.add(vp.id);
+            setCardSelectedVisual(vp.id, true);
+          }
+        }
+      }
+    }
+
+    updateStickyFooter();
+  }
+
+  // Real-Time page content search parsing across all active files
+  function handleSearchInput(e: Event) {
+    const query = (e.target as HTMLInputElement).value.trim().toLowerCase();
+    
+    if (!query) {
+      virtualPages.forEach((vp) => {
+        const card = document.getElementById(`page-card-${vp.id}`);
+        if (card) card.classList.remove('opacity-25');
+      });
+      searchSelectBtn.classList.add('hidden');
+      return;
+    }
+
+    let matchCount = 0;
+    const matchingIds: string[] = [];
+
+    // Filter virtual pages text
+    virtualPages.forEach((vp) => {
+      const isMatch = vp.text.includes(query);
+      const card = document.getElementById(`page-card-${vp.id}`);
+
+      if (card) {
+        if (isMatch) {
+          card.classList.remove('opacity-25');
+          matchCount++;
+          matchingIds.push(vp.id);
+        } else {
+          card.classList.add('opacity-25');
+        }
+      }
+    });
+
+    if (matchCount > 0) {
+      searchSelectBtn.textContent = `Select ${matchCount}`;
+      searchSelectBtn.classList.remove('hidden');
+      
+      // Select search matches handler
+      searchSelectBtn.onclick = () => {
+        matchingIds.forEach((id) => {
+          selectedPages.add(id);
+          setCardSelectedVisual(id, true);
+        });
+        updateStickyFooter();
+        // Clear search input
+        searchInput.value = '';
+        handleSearchInput({ target: searchInput } as any);
+      };
+    } else {
+      searchSelectBtn.classList.add('hidden');
+    }
+  }
+
+  // Footer visual logic
+  function updateStickyFooter() {
+    const count = selectedPages.size;
+    selectedCountLabel.textContent = count.toString();
+
+    if (count > 0) {
+      stickyFooter.classList.remove('translate-y-full');
+      extractBtn.disabled = false;
+      extractBtn.classList.remove('opacity-55', 'cursor-not-allowed');
+    } else {
+      stickyFooter.classList.add('translate-y-full');
+      extractBtn.disabled = true;
+      extractBtn.classList.add('opacity-55', 'cursor-not-allowed');
+    }
+  }
+
+  // Client-Side compilation & merging of multiple PDF pages
+  async function executeExtraction() {
+    if (selectedPages.size === 0 || loadedPdfDocs.length === 0 || loadedFiles.length === 0) return;
+
+    // Show Loader State
+    extractBtn.disabled = true;
+    extractBtn.textContent = 'PROCESSING…';
+    compilingLoader.classList.remove('hidden');
+    compilingLoader.classList.add('flex');
+
+    // Run compiler in next tick to allow DOM spinner to render
+    setTimeout(async () => {
+      try {
+        const newPdfDoc = await PDFDocument.create();
+        
+        // Find which pages in pageOrder visual array are selected, preserving rearranged visual order
+        const selectedVirtualPages = pageOrder
+          .map(idx => virtualPages[idx])
+          .filter(vp => selectedPages.has(vp.id));
+        
+        // Copy and append pages from original document references
+        for (const vp of selectedVirtualPages) {
+          const originalLibDoc = loadedPdfDocs[vp.fileIndex];
+          const [copiedPage] = await newPdfDoc.copyPages(originalLibDoc, [vp.pageIndex]);
+          newPdfDoc.addPage(copiedPage);
+        }
+        
+        // Save bytes
+        const newPdfBytes = await newPdfDoc.save();
+
+        // Download locally in browser
+        const blob = new Blob([newPdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        
+        a.href = url;
+        let originalBase = 'pageslice_compiled';
+        if (loadedFiles.length > 0) {
+          originalBase = loadedFiles[0].name.replace(/\.[^/.]+$/, "");
+          if (loadedFiles.length > 1) {
+            originalBase += `_and_${loadedFiles.length - 1}_other_files`;
+          }
+        }
+        a.download = `${originalBase}_extracted.pdf`;
+        
+        document.body.appendChild(a);
+        a.click();
+        
+        // Cleanup resources
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 100);
+
+      } catch (err) {
+        console.error(err);
+        showError('COMPILE ERROR: Page extraction operation failed. Check that pages exist.');
+      } finally {
+        // Reset states
+        extractBtn.disabled = false;
+        extractBtn.textContent = 'Extract Selected Pages';
+        compilingLoader.classList.remove('flex');
+        compilingLoader.classList.add('hidden');
+      }
+    }, 50);
+  }
+
+  // App Reset Logic
+  function resetApp() {
+    resetState();
+    
+    // Toggle screens
+    dashboardSection.classList.add('hidden');
+    dropzoneSection.classList.remove('hidden');
+    pdfInput.value = '';
+    addFilesInput.value = '';
+  }
+
+  function resetState() {
+    loadedFiles = [];
+    loadedPdfDocs = [];
+    loadedPdfJsDocs = [];
+    virtualPages = [];
+    pageOrder = [];
+    selectedPages.clear();
+    pendingFile = null;
+    pendingFilesList = null;
+    filePasswords = {};
+    pendingIsAppend = false;
+    rangeInput.value = '';
+    searchInput.value = '';
+    searchSelectBtn.classList.add('hidden');
+    updateStickyFooter();
+    hideDecryptionPrompt();
+  }
+
+  // Utility helpers
+  function showError(msg: string) {
+    errorMessage.textContent = msg;
+    errorBanner.classList.remove('hidden');
+    errorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    
+    if (pendingFile) {
+      decryptError.classList.remove('hidden');
+    }
+  }
+
+  // Hide errors
+  function hideError() {
+    errorBanner.classList.add('hidden');
+    decryptError.classList.add('hidden');
+  }
+
+  function formatBytes(bytes: number, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  }
+</script>

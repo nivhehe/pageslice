@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Contact Us - Support Control | PageSlice" description="Get in touch with PageSlice support or developers for technical feedback, bug reports, and assistance.">
+  <main class="spacex-bg min-h-screen text-white relative overflow-hidden flex flex-col font-inter selection:bg-primary selection:text-on-primary">
+    <!-- Top Decorative Line -->
+    <div class="h-1 bg-gradient-to-right from-primary/20 via-primary to-primary/20 w-full"></div>
+
+    <div class="max-w-6xl w-full mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1 flex flex-col relative z-10">
+      <Header />
+
+      <!-- Content Section -->
+      <section class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-8 rounded-2xl flex-1 font-mono text-left max-w-none text-mute">
+        <header class="border-b border-neutral-800/50 pb-6 mb-6">
+          <span class="text-[10px] text-primary uppercase tracking-widest font-bold">COMMUNICATIONS</span>
+          <h1 class="text-xl font-bold text-primary uppercase mt-2">Contact Us</h1>
+          <p class="text-xs font-inter mt-3 leading-relaxed">
+            Reach out to our developer desk for technical support, feedback, bug reporting, or code contributions.
+          </p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs font-inter leading-relaxed">
+          <!-- Column 1: Channels -->
+          <div class="space-y-6">
+            <div>
+              <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">Developer Support Desk</h2>
+              <p class="mb-2">
+                Have a question about document compatibility? Encountered an issue with a complex file? You can contact our developer directly.
+              </p>
+              <div class="border border-neutral-800 bg-neutral-900/50 rounded-xl p-4 font-mono">
+                <span class="text-mute">EMAIL CONTROL:</span> <a href="mailto:nivedmohan5423@gmail.com" class="text-primary hover:underline font-bold">nivedmohan5423@gmail.com</a>
+              </div>
+            </div>
+
+            <div>
+              <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">Bug Reports & Troubleshooting</h2>
+              <p>
+                To help us resolve errors quickly, please include:
+              </p>
+              <ul class="list-disc pl-5 mt-2 space-y-1 text-mute">
+                <li>Your browser type and operating system version.</li>
+                <li>The specific document format (.pdf, .docx, .pptx, or image).</li>
+                <li>The error log snippet displayed in the notification banner.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Column 2: Sandbox Philosophy -->
+          <div class="space-y-6">
+            <div>
+              <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">No Contact Lists / Database Security</h2>
+              <p>
+                As a privacy-first utility, we do not require signups, email registrations, or user accounts. We do not maintain a user email list or database, nor do we run marketing newsletters. 
+              </p>
+              <p class="mt-2 text-mute">
+                Any emails sent to our support desk are treated as confidential support tickets and deleted once the issue is resolved.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+
+    <!-- Dotted SpaceX matrix overlay -->
+    <div class="absolute inset-0 spacex-grid opacity-10 pointer-events-none"></div>
+    <!-- Radial dark mask -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#121310_100%)] pointer-events-none"></div>
+  </main>
+</Layout>
+
+<style>
+  .spacex-bg {
+    background-color: #121310;
+  }
+  .spacex-grid {
+    background-size: 32px 32px;
+    background-image: 
+      linear-gradient(to right, rgba(159, 232, 112, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(159, 232, 112, 0.03) 1px, transparent 1px);
+  }
+</style>

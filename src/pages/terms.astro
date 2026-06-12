@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Terms & Conditions - User Covenants | PageSlice" description="Read the Terms of Service for PageSlice, our free online client-side document merger and page extractor tool.">
+  <main class="spacex-bg min-h-screen text-white relative overflow-hidden flex flex-col font-inter selection:bg-primary selection:text-on-primary">
+    <!-- Top Decorative Line -->
+    <div class="h-1 bg-gradient-to-right from-primary/20 via-primary to-primary/20 w-full"></div>
+
+    <div class="max-w-6xl w-full mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1 flex flex-col relative z-10">
+      <Header />
+
+      <!-- Content Section -->
+      <section class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-8 rounded-2xl flex-1 font-mono text-left max-w-none text-mute">
+        <header class="border-b border-neutral-800/50 pb-6 mb-6">
+          <span class="text-[10px] text-primary uppercase tracking-widest font-bold">OPERATIONAL PROTOCOL</span>
+          <h1 class="text-xl font-bold text-primary uppercase mt-2">Terms & Conditions</h1>
+          <p class="text-xs font-inter mt-3 leading-relaxed">
+            Effective Date: June 12, 2026. Please read these terms carefully before accessing PageSlice systems.
+          </p>
+        </header>
+
+        <div class="space-y-6 text-xs font-inter leading-relaxed">
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">1. Acceptance of Terms</h2>
+            <p>
+              By accessing and utilizing PageSlice, you agree to comply with and be bound by these terms. If you do not accept these conditions, you are prohibited from utilizing PageSlice utilities.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">2. Scope of Service</h2>
+            <p>
+              PageSlice provides client-side document utilities (PDF page extraction, organizing, merging, deletion, and file formatting conversions) at **zero cost**. The application runs inside user browser sessions. There is no active server backend that monitors, logs, or saves your uploads.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">3. Commercial and Personal Use</h2>
+            <p>
+              You are granted a non-exclusive, free, and unrestricted license to use PageSlice for both personal and commercial operations. You are not charged subscription fees, billing cycles, or file volume rates.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">4. Limitation of Liability</h2>
+            <p>
+              PAGESLICE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. THE DEVELOPERS AND AUTHORS SHALL NOT BE HELD LIABLE FOR ANY DAMAGES, DATA LOSS, OR FILE CORRUPTION ARISING FROM THE USE OF CLIENT-SIDE EXECUTABLE UTILITIES. 
+            </p>
+            <p class="mt-2 text-mute">
+              Because all document conversions happen locally in your web browser tab's RAM, please ensure you maintain copies of your original source files.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">5. Governing Law</h2>
+            <p>
+              Any legal claims, disputes, or actions related to PageSlice services shall be governed under the local jurisdiction of the developer control room in India, without regard to conflicts of law provisions.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+
+    <!-- Dotted SpaceX matrix overlay -->
+    <div class="absolute inset-0 spacex-grid opacity-10 pointer-events-none"></div>
+    <!-- Radial dark mask -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#121310_100%)] pointer-events-none"></div>
+  </main>
+</Layout>
+
+<style>
+  .spacex-bg {
+    background-color: #121310;
+  }
+  .spacex-grid {
+    background-size: 32px 32px;
+    background-image: 
+      linear-gradient(to right, rgba(159, 232, 112, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(159, 232, 112, 0.03) 1px, transparent 1px);
+  }
+</style>

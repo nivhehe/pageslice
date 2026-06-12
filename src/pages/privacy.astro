@@ -1,0 +1,83 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Privacy Policy - Local Sandbox Security | PageSlice" description="Read the PageSlice Privacy Policy. We guarantee 100% client-side document processing with zero server uploads or tracking.">
+  <main class="spacex-bg min-h-screen text-white relative overflow-hidden flex flex-col font-inter selection:bg-primary selection:text-on-primary">
+    <!-- Top Decorative Line -->
+    <div class="h-1 bg-gradient-to-right from-primary/20 via-primary to-primary/20 w-full"></div>
+
+    <div class="max-w-6xl w-full mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1 flex flex-col relative z-10">
+      <Header />
+
+      <!-- Content Section -->
+      <section class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-8 rounded-2xl flex-1 font-mono text-left max-w-none text-mute">
+        <header class="border-b border-neutral-800/50 pb-6 mb-6">
+          <span class="text-[10px] text-primary uppercase tracking-widest font-bold">SECURITY CLAUSES</span>
+          <h1 class="text-xl font-bold text-primary uppercase mt-2">Privacy Policy</h1>
+          <p class="text-xs font-inter mt-3 leading-relaxed">
+            Effective Date: June 12, 2026. This policy governs how PageSlice processes user documents, cookies, and local execution telemetry.
+          </p>
+        </header>
+
+        <div class="space-y-6 text-xs font-inter leading-relaxed">
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">1. Zero Upload Guarantee</h2>
+            <p>
+              PageSlice operates on a strict **local-first** protocol. Your documents (PDF, DOCX, PPTX, and image files) are never uploaded to any remote server or cloud location. All processes (conversion, encryption, compilation, page rearrangement, page splitting, and merging) run completely on your own hardware inside your browser's execution engine.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">2. Browser Sandbox Security</h2>
+            <p>
+              Our application loads libraries (PDF-Lib, JSZip, PDF.js) and executes processing logic entirely within the local sandbox environment. The documents are read as raw local array buffers using Javascript HTML5 File APIs. When the browser tab is closed, the processing buffer is cleared from active device RAM, leaving no digital footprint.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">3. Cookies & Tracking</h2>
+            <p>
+              We do not use tracking cookies, tracking pixels, retargeting codes, or analytic scripts (such as Google Analytics). PageSlice does not compile marketing lists, profile user habits, or monitor individual browser activity.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">4. Third-Party Integrations</h2>
+            <p>
+              PageSlice serves dependencies (such as pdf.js and JSZip libraries) using secure global Content Delivery Networks (CDNs) like cdnjs. Our servers only serve the website's static HTML/CSS files; they do not receive, check, or look at your files.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">5. Changes to This Policy</h2>
+            <p>
+              Because our logic is hardcoded to execute entirely client-side, we will never modify this tool to upload files to a server without updating this policy and obtaining explicit consent. Your files are, and will always remain, completely private.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+
+    <!-- Dotted SpaceX matrix overlay -->
+    <div class="absolute inset-0 spacex-grid opacity-10 pointer-events-none"></div>
+    <!-- Radial dark mask -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#121310_100%)] pointer-events-none"></div>
+  </main>
+</Layout>
+
+<style>
+  .spacex-bg {
+    background-color: #121310;
+  }
+  .spacex-grid {
+    background-size: 32px 32px;
+    background-image: 
+      linear-gradient(to right, rgba(159, 232, 112, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(159, 232, 112, 0.03) 1px, transparent 1px);
+  }
+</style>

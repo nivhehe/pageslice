@@ -1,0 +1,81 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="About Us - Free PDF Extractor Online | PageSlice" description="Learn more about PageSlice, the privacy-first client-side document editor designed for secure local page extraction, organization, and document merging.">
+  <main class="spacex-bg min-h-screen text-white relative overflow-hidden flex flex-col font-inter selection:bg-primary selection:text-on-primary">
+    <!-- Top Decorative Line -->
+    <div class="h-1 bg-gradient-to-right from-primary/20 via-primary to-primary/20 w-full"></div>
+
+    <div class="max-w-6xl w-full mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1 flex flex-col relative z-10">
+      <Header />
+
+      <!-- Content Section -->
+      <section class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-8 rounded-2xl flex-1 font-mono text-left max-w-none text-mute">
+        <header class="border-b border-neutral-800/50 pb-6 mb-6">
+          <span class="text-[10px] text-primary uppercase tracking-widest font-bold">ABOUT THE PROJECT</span>
+          <h1 class="text-xl font-bold text-primary uppercase mt-2">About PageSlice</h1>
+          <p class="text-xs font-inter mt-3 leading-relaxed">
+            PageSlice is a high-performance, privacy-first document utility engine built to organize, extract, convert, and merge pages locally in your browser memory.
+          </p>
+        </header>
+
+        <div class="space-y-6 text-xs font-inter leading-relaxed">
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">Our Mission</h2>
+            <p>
+              In an era where data security is constantly threatened, uploading personal and work documents to remote servers is a security risk. PageSlice was designed to offer the exact same powerful PDF splitting, page deleting, and merging utilities as desktop software or online converters, but with one crucial difference: <strong class="font-semibold text-white">your files never leave your device</strong>.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">Privacy by Design</h2>
+            <p>
+              By leveraging modern web capabilities like webassembly, local buffer manipulation, and sandbox execution, PageSlice processes your files on-device. When you drag documents or photos onto the page, they are loaded as array buffers directly inside your browser tab's sandbox memory. The computation (decryption, page rendering, format parsing, and document assembly) is carried out entirely on your processor, ensuring absolute confidentiality.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">Open Technology & Libraries</h2>
+            <p>
+              PageSlice integrates high-quality, open-source technology frameworks to handle document formatting securely:
+            </p>
+            <ul class="list-disc pl-5 mt-2 space-y-2">
+              <li><strong class="font-semibold text-white">pdf-lib:</strong> Handles fast low-level PDF document loading, encryption, unlocking, copying, and file compilation.</li>
+              <li><strong class="font-semibold text-white">PDF.js (by Mozilla):</strong> Renders visual page thumbnails locally in real-time, providing immediate visual feedback for document arrangement.</li>
+              <li><strong class="font-semibold text-white">jszip:</strong> Unzips file structures on the client side, allowing Word DOCX and PowerPoint PPTX XML parsing.</li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 class="text-sm font-bold text-primary uppercase font-mono mb-2 tracking-wide">Developer & Support</h2>
+            <p>
+              This engine is maintained by <strong class="font-semibold text-white">Nived Mohan</strong> (<a href="mailto:nivedmohan5423@gmail.com" class="text-primary underline">nivedmohan5423@gmail.com</a>). Feel free to send bug reports, feature suggestions, or developer collaboration requests directly to the control room.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+
+    <!-- Dotted SpaceX matrix overlay -->
+    <div class="absolute inset-0 spacex-grid opacity-10 pointer-events-none"></div>
+    <!-- Radial dark mask -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#121310_100%)] pointer-events-none"></div>
+  </main>
+</Layout>
+
+<style>
+  .spacex-bg {
+    background-color: #121310;
+  }
+  .spacex-grid {
+    background-size: 32px 32px;
+    background-image: 
+      linear-gradient(to right, rgba(159, 232, 112, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(159, 232, 112, 0.03) 1px, transparent 1px);
+  }
+</style>
