@@ -1,0 +1,69 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="500 - Critical Failure | PageSlice" description="Error 500: A server-side connection or execution exception has occurred within the system engine.">
+  <main class="spacex-bg min-h-screen text-white relative overflow-hidden flex flex-col font-inter selection:bg-primary selection:text-on-primary">
+    <!-- Top Decorative Line -->
+    <div class="h-1 bg-gradient-to-right from-primary/20 via-primary to-primary/20 w-full"></div>
+
+    <div class="max-w-6xl w-full mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1 flex flex-col relative z-10">
+      <Header />
+
+      <!-- Error Display Section -->
+      <section class="border border-neutral-800 bg-canvas/40 backdrop-blur-md p-8 rounded-2xl flex-1 flex flex-col items-center justify-center text-center relative overflow-hidden min-h-[400px]">
+        <!-- Telemetry Grid inside section -->
+        <div class="absolute inset-0 spacex-grid opacity-5 pointer-events-none"></div>
+
+        <div class="relative z-10 flex flex-col items-center max-w-md">
+          <!-- Broken Connection Telemetry Graphic -->
+          <div class="h-16 w-16 mb-6 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center text-red-500 glow-negative animate-pulse" aria-hidden="true">
+            <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+
+          <span class="text-[10px] text-red-400 font-mono uppercase tracking-widest font-bold">TELEMETRY CODE: 500</span>
+          <h1 class="text-xl sm:text-2xl font-bold text-white uppercase mt-3 mb-4 tracking-wider">
+            Critical Failure
+          </h1>
+          <p class="text-xs text-mute font-inter leading-relaxed mb-8">
+            An internal server-side connection or execution exception has occurred within the system engine. The current session has aborted operation.
+          </p>
+
+          <!-- Back to Base Button (SpaceX Ghost Pill Styling) -->
+          <a 
+            href="/" 
+            class="inline-block border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-xl px-8 py-3 text-xs font-mono font-bold uppercase tracking-wider glow-primary-hover"
+          >
+            Retry Connection
+          </a>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+
+    <!-- Dotted SpaceX matrix overlay -->
+    <div class="absolute inset-0 spacex-grid opacity-10 pointer-events-none"></div>
+    <!-- Radial dark mask to create cockpit feel -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#121310_100%)] pointer-events-none"></div>
+  </main>
+</Layout>
+
+<style>
+  .spacex-bg {
+    background-color: #121310;
+  }
+  .spacex-grid {
+    background-size: 32px 32px;
+    background-image: 
+      linear-gradient(to right, rgba(159, 232, 112, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(159, 232, 112, 0.03) 1px, transparent 1px);
+  }
+  .glow-negative {
+    box-shadow: 0 0 15px rgba(208, 50, 56, 0.15);
+  }
+</style>
