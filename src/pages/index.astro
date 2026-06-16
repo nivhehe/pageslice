@@ -611,7 +611,7 @@ import Footer from '../components/Footer.astro';
     <!-- STATE 4: Local Page Text Editor Modal -->
     <div 
       id="edit-modal" 
-      class="hidden fixed inset-0 z-50 bg-canvas-soft/80 backdrop-blur-md animate-fade-in sm:flex sm:items-center sm:justify-center sm:p-4"
+      class="hidden fixed inset-0 z-50 bg-canvas-soft/80 backdrop-blur-md animate-fade-in sm:items-center sm:justify-center sm:p-4"
     >
       <div class="border-0 sm:border border-neutral-800 bg-canvas rounded-none sm:rounded-2xl max-w-5xl w-full flex flex-col h-full sm:h-[90vh] relative shadow-2xl">
         <!-- Matrix grid overlay -->
@@ -2556,7 +2556,10 @@ import Footer from '../components/Footer.astro';
     
     // Show modal
     const editModal = document.getElementById('edit-modal') as HTMLElement;
-    if (editModal) editModal.classList.remove('hidden');
+    if (editModal) {
+      editModal.classList.remove('hidden');
+      editModal.classList.add('flex');
+    }
   }
 
   async function openGlobalEditModal() {
@@ -2598,7 +2601,10 @@ import Footer from '../components/Footer.astro';
     
     // Show modal
     const editModal = document.getElementById('edit-modal') as HTMLElement;
-    if (editModal) editModal.classList.remove('hidden');
+    if (editModal) {
+      editModal.classList.remove('hidden');
+      editModal.classList.add('flex');
+    }
   }
 
   async function loadPageInSession(pageId: string) {
@@ -2968,7 +2974,10 @@ import Footer from '../components/Footer.astro';
 
   function closeEditModal() {
     const editModal = document.getElementById('edit-modal') as HTMLElement;
-    if (editModal) editModal.classList.add('hidden');
+    if (editModal) {
+      editModal.classList.add('hidden');
+      editModal.classList.remove('flex');
+    }
     currentEditingPageId = '';
     tempModalEdits = [];
     tempSessionEdits = {};
@@ -2977,6 +2986,27 @@ import Footer from '../components/Footer.astro';
   }
 
   function saveEditChanges() {
+    // Sync editItem.editedText from textarea DOM values before saving.
+    // On mobile, input events may not fire reliably with virtual keyboards,
+    // so reading directly from the DOM ensures we capture the latest text.
+    const listContainer = document.getElementById('edit-text-list') as HTMLElement;
+    if (listContainer) {
+      const textareas = listContainer.querySelectorAll('textarea');
+      textareas.forEach((ta: HTMLTextAreaElement) => {
+        const idx = parseInt(ta.dataset.index || '', 10);
+        if (!isNaN(idx)) {
+          const editItem = tempModalEdits.find((e: any) => e.index === idx);
+          if (editItem && editItem.editedText !== ta.value) {
+            if (!editItem._undoSaved) {
+              undoStack.push(JSON.parse(JSON.stringify(editItem)));
+              editItem._undoSaved = true;
+            }
+            editItem.editedText = ta.value;
+          }
+        }
+      });
+    }
+    
     // Cache current active page modifications first
     if (currentEditingPageId) {
       tempSessionEdits[currentEditingPageId] = {
@@ -2985,10 +3015,15 @@ import Footer from '../components/Footer.astro';
       };
     }
     
-    // Commit the session edits to the global pageEdits dictionary
-    pageEdits = tempSessionEdits;
+    // Commit the session edits to the global pageEdits dictionary via deep copy
+    // to avoid reference sharing issues that break subsequent saves
+    pageEdits = JSON.parse(JSON.stringify(tempSessionEdits));
     
-    // Refresh thumbnail grid in background to persist edits visually
+    // Reset undo stack since edits are now committed
+    undoStack = [];
+    updateUndoBtnState();
+    
+    // Refresh thumbnail grid to persist edits visually
     renderPagesGrid();
     
     // Redraw the editor canvas to confirm applied state
