@@ -773,8 +773,8 @@ import Footer from '../components/Footer.astro';
         </button>
       </div>
       <!-- Preview Content -->
-      <div class="flex-1 flex items-center justify-center p-4 overflow-auto">
-        <img id="preview-image" class="max-w-full max-h-full object-contain shadow-2xl rounded-lg" alt="Page preview" />
+      <div id="preview-content" class="flex-1 flex items-center justify-center p-4 overflow-auto bg-neutral-950">
+        <canvas id="preview-canvas" class="max-w-full max-h-full object-contain shadow-2xl rounded-lg"></canvas>
       </div>
     </div>
 
@@ -2731,21 +2731,64 @@ import Footer from '../components/Footer.astro';
   let previewVisible = false;
 
   function openPreviewOverlay() {
-    const editCanvas = document.getElementById('edit-page-canvas') as HTMLCanvasElement;
-    const previewImg = document.getElementById('preview-image') as HTMLImageElement;
-    const previewTitle = document.getElementById('preview-title') as HTMLElement;
     const overlay = document.getElementById('preview-overlay') as HTMLElement;
-    if (!editCanvas || !previewImg || !overlay) return;
-    previewImg.src = editCanvas.toDataURL('image/png');
+    const canvas = document.getElementById('preview-canvas') as HTMLCanvasElement;
+    const previewTitle = document.getElementById('preview-title') as HTMLElement;
+    if (!overlay || !canvas) return;
+    
+    const vp = virtualPages.find(p => p.id === currentEditingPageId);
+    if (!vp) return;
+    const pdfJsDoc = loadedPdfJsDocs[vp.fileIndex];
+    if (!pdfJsDoc) return;
+    
+    overlay.classList.remove('hidden');
+    
     const curPage = sessionEditablePages.findIndex(p => p.id === currentEditingPageId);
     if (previewTitle && curPage >= 0) {
       previewTitle.textContent = `PAGE ${curPage + 1} PREVIEW`;
     }
-    overlay.classList.remove('hidden');
+    
+    // Render page at high resolution
+    pdfJsDoc.getPage(vp.pageIndex + 1).then((page) => {
+      const previewContainer = document.getElementById('preview-content') as HTMLElement;
+      if (!previewContainer) return;
+      
+      const dpr = window.devicePixelRatio || 1;
+      const containerWidth = previewContainer.clientWidth - 32;
+      const containerHeight = previewContainer.clientHeight - 32;
+      
+      const origViewport = page.getViewport({ scale: 1 });
+      const scaleX = containerWidth / origViewport.width;
+      const scaleY = containerHeight / origViewport.height;
+      const scale = Math.min(scaleX, scaleY) * dpr;
+      
+      const viewport = page.getViewport({ scale });
+      
+      canvas.style.width = (viewport.width / dpr) + 'px';
+      canvas.style.height = (viewport.height / dpr) + 'px';
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      
+      const renderContext = { canvasContext: ctx, viewport };
+      page.render(renderContext).promise.then(() => {
+        const edits = tempSessionEdits[currentEditingPageId] || { items: [], textColor: 'black' };
+        if (edits.items && edits.items.length > 0) {
+          drawEditsOnCanvas(canvas, viewport, edits);
+        }
+      }).catch(() => {});
+    });
   }
 
   function closePreviewOverlay() {
     const overlay = document.getElementById('preview-overlay') as HTMLElement;
+    const canvas = document.getElementById('preview-canvas') as HTMLCanvasElement;
+    if (canvas) {
+      canvas.width = 0;
+      canvas.height = 0;
+    }
     if (overlay) overlay.classList.add('hidden');
   }
 
