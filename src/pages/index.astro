@@ -738,6 +738,16 @@ import Footer from '../components/Footer.astro';
                 </svg>
               </button>
               <button 
+                id="edit-undo-btn"
+                disabled
+                class="border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-xl px-3 py-2.5 text-xs font-mono uppercase tracking-wider cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-neutral-800 disabled:hover:bg-transparent disabled:hover:text-mute"
+                title="Undo last edit"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a5 5 0 015 5v2M3 10l4-4m-4 4l4 4" />
+                </svg>
+              </button>
+              <button 
                 id="edit-cancel-btn" 
                 class="border border-neutral-800 hover:border-red-500/50 hover:bg-red-500/10 text-mute hover:text-red-400 transition-all rounded-xl px-5 py-2.5 text-xs font-mono uppercase tracking-wider cursor-pointer"
               >
@@ -916,6 +926,7 @@ import Footer from '../components/Footer.astro';
   let previewBaseCanvas: HTMLCanvasElement | null = null;
   let previewPageIndex = 0;
   let _redrawRafId = 0;
+  let undoStack: any[] = [];
 
   // Sanitizes a string for drawing with PDF standard fonts (WinAnsiEncoding)
   function sanitizeTextForWinAnsi(text: string): string {
@@ -1102,11 +1113,13 @@ import Footer from '../components/Footer.astro';
     const editCancelBtn = document.getElementById('edit-cancel-btn') as HTMLButtonElement;
     const editSaveBtn = document.getElementById('edit-save-btn') as HTMLButtonElement;
     const editPreviewBtn = document.getElementById('edit-preview-btn') as HTMLButtonElement;
+    const editUndoBtn = document.getElementById('edit-undo-btn') as HTMLButtonElement;
     
     if (editCloseBtn) editCloseBtn.addEventListener('click', closeEditModal);
     if (editCancelBtn) editCancelBtn.addEventListener('click', closeEditModal);
     if (editSaveBtn) editSaveBtn.addEventListener('click', saveEditChanges);
     if (editPreviewBtn) editPreviewBtn.addEventListener('click', openPreviewOverlay);
+    if (editUndoBtn) editUndoBtn.addEventListener('click', undoLastEdit);
 
     // Preview overlay close
     const previewCloseBtn = document.getElementById('preview-close-btn') as HTMLButtonElement;
@@ -1994,6 +2007,7 @@ import Footer from '../components/Footer.astro';
       if (activeSegmentIndex === null) return;
       const editItem = tempModalEdits.find(item => item.index === activeSegmentIndex);
       if (editItem) {
+        pushUndoState(editItem);
         editItem.fontSize = Math.max(4, editItem.fontSize - 1);
         setActiveSegment(activeSegmentIndex, editItem);
         redrawEditCanvas();
@@ -2007,6 +2021,7 @@ import Footer from '../components/Footer.astro';
       if (activeSegmentIndex === null) return;
       const editItem = tempModalEdits.find(item => item.index === activeSegmentIndex);
       if (editItem) {
+        pushUndoState(editItem);
         editItem.fontSize = Math.min(100, editItem.fontSize + 1);
         setActiveSegment(activeSegmentIndex, editItem);
         redrawEditCanvas();
@@ -2020,6 +2035,7 @@ import Footer from '../components/Footer.astro';
       if (activeSegmentIndex === null) return;
       const editItem = tempModalEdits.find(item => item.index === activeSegmentIndex);
       if (editItem) {
+        pushUndoState(editItem);
         editItem.isBold = !editItem.isBold;
         editItem.fontNameMapped = getStandardFontName(editItem.fontFamilyGroup || 'helvetica', editItem.isBold, editItem.isItalic);
         setActiveSegment(activeSegmentIndex, editItem);
@@ -2034,6 +2050,7 @@ import Footer from '../components/Footer.astro';
       if (activeSegmentIndex === null) return;
       const editItem = tempModalEdits.find(item => item.index === activeSegmentIndex);
       if (editItem) {
+        pushUndoState(editItem);
         editItem.isItalic = !editItem.isItalic;
         editItem.fontNameMapped = getStandardFontName(editItem.fontFamilyGroup || 'helvetica', editItem.isBold, editItem.isItalic);
         setActiveSegment(activeSegmentIndex, editItem);
@@ -2048,6 +2065,7 @@ import Footer from '../components/Footer.astro';
       if (activeSegmentIndex === null) return;
       const editItem = tempModalEdits.find(item => item.index === activeSegmentIndex);
       if (editItem) {
+        pushUndoState(editItem);
         editItem.isUnderlined = !editItem.isUnderlined;
         setActiveSegment(activeSegmentIndex, editItem);
         redrawEditCanvas();
@@ -2434,6 +2452,10 @@ import Footer from '../components/Footer.astro';
           
           // Update model and trigger real-time preview updates on the canvas as the user types
           textarea.addEventListener('input', () => {
+            if (!editItem._undoSaved) {
+              undoStack.push(JSON.parse(JSON.stringify(editItem)));
+              editItem._undoSaved = true;
+            }
             editItem.editedText = textarea.value;
             markAsModified(listItem, editItem);
             redrawEditCanvas();
@@ -2496,7 +2518,7 @@ import Footer from '../components/Footer.astro';
     }
   }
 
-  function openEditModal(pageId: string) {
+  async function openEditModal(pageId: string) {
     const editablePages = pageOrder
       .map(idx => virtualPages[idx])
       .filter(vp => {
@@ -2530,14 +2552,14 @@ import Footer from '../components/Footer.astro';
     sessionEditablePages = editablePages;
     
     // Load the selected page
-    loadPageInSession(pageId);
+    await loadPageInSession(pageId);
     
     // Show modal
     const editModal = document.getElementById('edit-modal') as HTMLElement;
     if (editModal) editModal.classList.remove('hidden');
   }
 
-  function openGlobalEditModal() {
+  async function openGlobalEditModal() {
     // Find all editable pages in visual order
     const editablePages = pageOrder
       .map(idx => virtualPages[idx])
@@ -2572,7 +2594,7 @@ import Footer from '../components/Footer.astro';
     sessionEditablePages = editablePages;
     
     // Load the first page
-    loadPageInSession(editablePages[0].id);
+    await loadPageInSession(editablePages[0].id);
     
     // Show modal
     const editModal = document.getElementById('edit-modal') as HTMLElement;
@@ -2587,6 +2609,9 @@ import Footer from '../components/Footer.astro';
         textColor: modalTextColor
       };
     }
+    
+    undoStack = [];
+    updateUndoBtnState();
     
     currentEditingPageId = pageId;
     const vp = virtualPages.find(p => p.id === pageId);
@@ -2907,6 +2932,40 @@ import Footer from '../components/Footer.astro';
     redrawEditCanvas();
   }
 
+  function pushUndoState(editItem: any) {
+    undoStack.push({
+      editedText: editItem.editedText,
+      fontSize: editItem.fontSize,
+      isBold: editItem.isBold,
+      isItalic: editItem.isItalic,
+      isUnderlined: editItem.isUnderlined,
+      fontNameMapped: editItem.fontNameMapped,
+      index: editItem.index
+    });
+  }
+
+  function undoLastEdit() {
+    if (undoStack.length === 0) return;
+    const prev = undoStack.pop();
+    const editItem = tempModalEdits.find((e: any) => e.index === prev.index);
+    if (!editItem) return;
+    Object.assign(editItem, prev);
+    editItem._undoSaved = false;
+    const textarea = document.querySelector(`textarea[data-index="${prev.index}"]`) as HTMLTextAreaElement;
+    if (textarea) textarea.value = editItem.editedText;
+    const listContainer = document.getElementById('edit-text-list') as HTMLElement;
+    const listItem = listContainer?.querySelector(`textarea[data-index="${prev.index}"]`)?.closest('div') as HTMLElement;
+    if (listItem) markAsModified(listItem, editItem);
+    setActiveSegment(prev.index, editItem);
+    redrawEditCanvas();
+    updateUndoBtnState();
+  }
+
+  function updateUndoBtnState() {
+    const undoBtn = document.getElementById('edit-undo-btn') as HTMLButtonElement;
+    if (undoBtn) undoBtn.disabled = undoStack.length === 0;
+  }
+
   function closeEditModal() {
     const editModal = document.getElementById('edit-modal') as HTMLElement;
     if (editModal) editModal.classList.add('hidden');
@@ -2914,6 +2973,7 @@ import Footer from '../components/Footer.astro';
     tempModalEdits = [];
     tempSessionEdits = {};
     sessionEditablePages = [];
+    undoStack = [];
   }
 
   function saveEditChanges() {
