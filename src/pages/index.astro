@@ -2988,8 +2988,23 @@ import Footer from '../components/Footer.astro';
     // Commit the session edits to the global pageEdits dictionary
     pageEdits = tempSessionEdits;
     
-    closeEditModal();
+    // Refresh thumbnail grid in background to persist edits visually
     renderPagesGrid();
+    
+    // Redraw the editor canvas to confirm applied state
+    redrawEditCanvas();
+    
+    // Show saved feedback on the button
+    const saveBtn = document.getElementById('edit-save-btn') as HTMLButtonElement;
+    if (saveBtn) {
+      const originalText = saveBtn.textContent || 'Apply Changes';
+      saveBtn.textContent = 'SAVED';
+      saveBtn.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-canvas');
+      setTimeout(() => {
+        saveBtn.textContent = originalText;
+        saveBtn.classList.remove('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-canvas');
+      }, 1500);
+    }
   }
 
   function togglePageSelection(pageId: string) {
