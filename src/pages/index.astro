@@ -2095,11 +2095,11 @@ import Footer from '../components/Footer.astro';
         // Compute cover rectangle using original size
         const origFontSize = (item.originalFontSize || item.fontSize) * viewport.scale;
         const origWidth = item.width * viewport.scale;
-        const coverHeight = origFontSize * 1.25;
+        const coverHeight = origFontSize * 1.35;
         
         const bg = item.bgColor || { r: 255, g: 255, b: 255 };
         ctx.fillStyle = `rgb(${bg.r}, ${bg.g}, ${bg.b})`;
-        ctx.fillRect(x, y - origFontSize * 0.95, origWidth * 1.05, coverHeight);
+        ctx.fillRect(x, y - origFontSize * 1.0, origWidth * 1.05, coverHeight);
         
         let fontStyle = '';
         if (item.isBold) fontStyle += 'bold ';
@@ -3337,9 +3337,9 @@ import Footer from '../components/Footer.astro';
                 const origSize = editItem.originalFontSize || editItem.fontSize;
                 copiedPage.drawRectangle({
                   x: editItem.x,
-                  y: editItem.y - origSize * 0.15,
+                  y: editItem.y - origSize * 0.35,
                   width: editItem.width * 1.05,
-                  height: origSize * 1.25,
+                  height: origSize * 1.35,
                   color: fillColor,
                 });
                 
