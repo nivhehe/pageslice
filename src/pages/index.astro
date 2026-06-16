@@ -1872,7 +1872,7 @@ import Footer from '../components/Footer.astro';
     const isBold = name.includes('bold') || name.includes('heavy') || name.includes('black') || name.includes('w-700') || name.includes('w-800') || name.includes('w-900') || name.includes('g_d0_f2');
     const isItalic = name.includes('italic') || name.includes('oblique') || name.includes('slanted') || name.includes('skewed');
 
-    if (name.includes('times') || name.includes('roman') || name.includes('serif') || name.includes('georgia')) {
+    if (name.includes('times') || name.includes('roman') || (name.includes('serif') && !name.includes('sans-serif') && !name.includes('sansserif')) || name.includes('georgia') || name.includes('cambria') || name.includes('garamond') || name.includes('bookman') || name.includes('palatino')) {
       if (isBold && isItalic) return StandardFonts.TimesRomanBoldItalic;
       if (isBold) return StandardFonts.TimesRomanBold;
       if (isItalic) return StandardFonts.TimesRomanItalic;
@@ -2105,11 +2105,22 @@ import Footer from '../components/Footer.astro';
         if (item.isBold) fontStyle += 'bold ';
         if (item.isItalic) fontStyle += 'italic ';
         
-        let cssFontFamily = 'Helvetica, Arial, system-ui, sans-serif';
+        let cssFontFamily = '';
+        if (item.fontFamilyOriginal) {
+          const genericFonts = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy', 'system-ui'];
+          if (genericFonts.includes(item.fontFamilyOriginal.toLowerCase())) {
+            cssFontFamily = `${item.fontFamilyOriginal}, `;
+          } else {
+            cssFontFamily = `"${item.fontFamilyOriginal}", `;
+          }
+        }
+        
         if (item.fontFamilyGroup === 'times') {
-          cssFontFamily = '"Times New Roman", Georgia, "Times", serif';
+          cssFontFamily += '"Times New Roman", Georgia, "Times", serif';
         } else if (item.fontFamilyGroup === 'courier') {
-          cssFontFamily = '"Courier New", Consolas, Monaco, monospace';
+          cssFontFamily += '"Courier New", Consolas, Monaco, monospace';
+        } else {
+          cssFontFamily += 'Helvetica, Arial, system-ui, sans-serif';
         }
         ctx.font = `${fontStyle}${fontSize}px ${cssFontFamily}`;
         
@@ -2365,9 +2376,10 @@ import Footer from '../components/Footer.astro';
           const mappedFont = mapFontName(fontClues);
           
           let family = 'helvetica';
-          if (fontClues.toLowerCase().includes('times') || fontClues.toLowerCase().includes('roman') || fontClues.toLowerCase().includes('serif') || fontClues.toLowerCase().includes('georgia')) {
+          const cluesLower = fontClues.toLowerCase();
+          if (cluesLower.includes('times') || cluesLower.includes('roman') || (cluesLower.includes('serif') && !cluesLower.includes('sans-serif') && !cluesLower.includes('sansserif')) || cluesLower.includes('georgia') || cluesLower.includes('cambria') || cluesLower.includes('garamond') || cluesLower.includes('bookman') || cluesLower.includes('palatino')) {
             family = 'times';
-          } else if (fontClues.toLowerCase().includes('courier') || fontClues.toLowerCase().includes('mono') || fontClues.toLowerCase().includes('consolas') || fontClues.toLowerCase().includes('code') || fontClues.toLowerCase().includes('monospace')) {
+          } else if (cluesLower.includes('courier') || cluesLower.includes('mono') || cluesLower.includes('consolas') || cluesLower.includes('code') || cluesLower.includes('monospace')) {
             family = 'courier';
           }
           
@@ -2390,6 +2402,7 @@ import Footer from '../components/Footer.astro';
               fontSize: itemScale || 12,
               originalFontSize: itemScale || 12,
               fontFamilyGroup: family,
+              fontFamilyOriginal: fontFamilyName,
               isBold: originalIsBold,
               originalIsBold: originalIsBold,
               isItalic: originalIsItalic,
@@ -2406,6 +2419,7 @@ import Footer from '../components/Footer.astro';
             if (editItem.isItalic === undefined) editItem.isItalic = originalIsItalic;
             if (editItem.isUnderlined === undefined) editItem.isUnderlined = false;
             if (editItem.fontFamilyGroup === undefined) editItem.fontFamilyGroup = family;
+            if (editItem.fontFamilyOriginal === undefined) editItem.fontFamilyOriginal = fontFamilyName;
             if (editItem.originalFontSize === undefined) editItem.originalFontSize = editItem.fontSize;
           }
           
