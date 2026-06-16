@@ -613,7 +613,7 @@ import Footer from '../components/Footer.astro';
       id="edit-modal" 
       class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas-soft/80 backdrop-blur-md animate-fade-in"
     >
-      <div class="border-0 sm:border border-neutral-800 bg-canvas rounded-none sm:rounded-2xl max-w-5xl w-full flex flex-col h-full sm:h-[90vh] relative overflow-hidden shadow-2xl">
+      <div class="border-0 sm:border border-neutral-800 bg-canvas rounded-none sm:rounded-2xl max-w-5xl w-full flex flex-col h-full sm:h-[90vh] relative overflow-y-auto sm:overflow-hidden shadow-2xl">
         <!-- Matrix grid overlay -->
         <div class="absolute inset-0 spacex-grid opacity-5 pointer-events-none"></div>
 
@@ -667,9 +667,9 @@ import Footer from '../components/Footer.astro';
           </div>
 
           <!-- Modal Body (Split view) -->
-          <div class="flex-1 overflow-hidden p-4 sm:p-6 flex flex-col lg:flex-row gap-4 lg:gap-6">
+          <div class="flex-1 overflow-y-auto sm:overflow-hidden p-4 sm:p-6 flex flex-col lg:flex-row gap-4 lg:gap-6">
             <!-- Left Side: Interactive Page Layout Preview -->
-            <div class="flex-1 flex items-center justify-center bg-neutral-950 border border-neutral-800 rounded-xl relative overflow-auto p-4 min-h-[250px] lg:min-h-0">
+            <div class="flex-1 flex items-center justify-center bg-neutral-950 border border-neutral-800 rounded-xl relative overflow-auto p-4 min-h-[140px] sm:min-h-[200px] lg:min-h-0">
               <div id="edit-canvas-container" class="relative shrink-0 m-auto">
                 <canvas id="edit-page-canvas" class="block pointer-events-none"></canvas>
                 <div id="edit-text-overlay" class="absolute inset-0 select-text pointer-events-auto"></div>
@@ -677,7 +677,7 @@ import Footer from '../components/Footer.astro';
             </div>
 
             <!-- Right Side: Text Edit Form (Detailed list of fields) -->
-            <div class="w-full lg:w-[450px] flex flex-col border border-neutral-800 rounded-xl bg-canvas-soft/10 overflow-hidden flex-1 lg:h-full">
+            <div class="w-full lg:w-[400px] flex flex-col border border-neutral-800 rounded-xl bg-canvas-soft/10 overflow-hidden flex-none lg:flex-1 lg:h-full">
               <div class="p-3 border-b border-neutral-800 bg-canvas-soft/20 font-mono text-[10px] uppercase tracking-wider text-mute flex justify-between items-center shrink-0">
                 <span>Text Segments List</span>
                 <span id="edit-segment-count" class="text-primary font-bold">0 Items</span>
@@ -2644,6 +2644,19 @@ import Footer from '../components/Footer.astro';
         }
       });
     }
+  }
+
+  // Mobile keyboard handling: adjust edit modal height on visual viewport change
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      const editModal = document.getElementById('edit-modal') as HTMLElement;
+      if (!editModal || editModal.classList.contains('hidden')) return;
+      const innerContainer = editModal.querySelector('div.max-w-5xl') as HTMLElement;
+      if (innerContainer) {
+        const vh = window.visualViewport?.height || window.innerHeight;
+        innerContainer.style.maxHeight = `${vh}px`;
+      }
+    });
   }
 
   function closeEditModal() {

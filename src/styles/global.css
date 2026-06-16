@@ -88,6 +88,13 @@
   --negative-bg: #4a0d0d;
 }
 
+/* Prevent iOS auto-zoom on input focus */
+@media screen and (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
 /* Base resets & typography rules */
 html {
   font-family: var(--font-inter);
