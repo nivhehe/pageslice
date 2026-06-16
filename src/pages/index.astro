@@ -762,9 +762,29 @@ import Footer from '../components/Footer.astro';
     >
       <!-- Preview Header -->
       <div class="flex items-center justify-between px-4 py-3 border-b border-neutral-800 bg-canvas/80 shrink-0">
-        <div class="font-mono">
-          <span class="text-[10px] text-primary uppercase tracking-widest font-bold">PREVIEW</span>
-          <h2 id="preview-title" class="text-sm font-bold text-white uppercase mt-0.5">PAGE PREVIEW</h2>
+        <div class="flex items-center gap-3 font-mono">
+          <button 
+            id="preview-prev-btn"
+            class="border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-lg p-1.5 disabled:opacity-40 disabled:hover:border-neutral-800 disabled:hover:bg-transparent disabled:hover:text-mute cursor-pointer disabled:cursor-not-allowed"
+            title="Previous Page"
+          >
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <div class="text-center">
+            <span class="text-[10px] text-primary uppercase tracking-widest font-bold">PREVIEW</span>
+            <h2 id="preview-title" class="text-sm font-bold text-white uppercase mt-0.5">PAGE 1 OF 1</h2>
+          </div>
+          <button 
+            id="preview-next-btn"
+            class="border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-lg p-1.5 disabled:opacity-40 disabled:hover:border-neutral-800 disabled:hover:bg-transparent disabled:hover:text-mute cursor-pointer disabled:cursor-not-allowed"
+            title="Next Page"
+          >
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
         <button id="preview-close-btn" class="text-mute hover:text-white transition-colors cursor-pointer" aria-label="Close preview">
           <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -894,6 +914,7 @@ import Footer from '../components/Footer.astro';
   let currentViewport: any = null;
   let activeSegmentIndex: number | null = null;
   let previewBaseCanvas: HTMLCanvasElement | null = null;
+  let previewPageIndex = 0;
 
   // Sanitizes a string for drawing with PDF standard fonts (WinAnsiEncoding)
   function sanitizeTextForWinAnsi(text: string): string {
@@ -1099,6 +1120,26 @@ import Footer from '../components/Footer.astro';
         if (po && !po.classList.contains('hidden')) closePreviewOverlay();
       }
     });
+
+    // Preview page navigation
+    const previewPrevBtn = document.getElementById('preview-prev-btn') as HTMLButtonElement;
+    const previewNextBtn = document.getElementById('preview-next-btn') as HTMLButtonElement;
+    if (previewPrevBtn) {
+      previewPrevBtn.addEventListener('click', () => {
+        const idx = previewPageIndex - 1;
+        if (idx >= 0 && idx < sessionEditablePages.length) {
+          renderPreviewPage(sessionEditablePages[idx].id);
+        }
+      });
+    }
+    if (previewNextBtn) {
+      previewNextBtn.addEventListener('click', () => {
+        const idx = previewPageIndex + 1;
+        if (idx >= 0 && idx < sessionEditablePages.length) {
+          renderPreviewPage(sessionEditablePages[idx].id);
+        }
+      });
+    }
     
     setupColorButtons();
     setupSessionPageSelector();
@@ -2743,38 +2784,35 @@ import Footer from '../components/Footer.astro';
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(previewBaseCanvas, 0, 0);
-    const edits = {
-      items: tempModalEdits,
-      textColor: modalTextColor
-    };
     const previewViewport = (window as any).__previewViewport;
     if (previewViewport) {
-      drawEditsOnCanvas(canvas, previewViewport, edits);
+      drawEditsOnCanvas(canvas, previewViewport, { items: tempModalEdits, textColor: modalTextColor });
     }
   }
 
-  function openPreviewOverlay() {
-    const overlay = document.getElementById('preview-overlay') as HTMLElement;
+  function renderPreviewPage(pageId: string) {
     const canvas = document.getElementById('preview-canvas') as HTMLCanvasElement;
-    const previewTitle = document.getElementById('preview-title') as HTMLElement;
-    if (!overlay || !canvas) return;
-    
-    const vp = virtualPages.find(p => p.id === currentEditingPageId);
+    if (!canvas) return;
+    const vp = virtualPages.find(p => p.id === pageId);
     if (!vp) return;
     const pdfJsDoc = loadedPdfJsDocs[vp.fileIndex];
     if (!pdfJsDoc) return;
     
-    overlay.classList.remove('hidden');
+    const previewContainer = document.getElementById('preview-content') as HTMLElement;
+    if (!previewContainer) return;
     
-    const curPage = sessionEditablePages.findIndex(p => p.id === currentEditingPageId);
-    if (previewTitle && curPage >= 0) {
-      previewTitle.textContent = `PAGE ${curPage + 1} PREVIEW`;
+    // Load current edits into temp if navigating from another page
+    if (currentEditingPageId && currentEditingPageId !== pageId) {
+      tempSessionEdits[currentEditingPageId] = {
+        items: tempModalEdits,
+        textColor: modalTextColor
+      };
     }
     
-    // Render page at high resolution
+    const targetPageId = pageId;
+    
     pdfJsDoc.getPage(vp.pageIndex + 1).then((page) => {
-      const previewContainer = document.getElementById('preview-content') as HTMLElement;
-      if (!previewContainer) return;
+      if (targetPageId !== pageId) return; // stale
       
       const dpr = window.devicePixelRatio || 1;
       const containerWidth = previewContainer.clientWidth - 32;
@@ -2796,7 +2834,6 @@ import Footer from '../components/Footer.astro';
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
       
-      // Store clean page render as base for live updates
       if (!previewBaseCanvas) {
         previewBaseCanvas = document.createElement('canvas');
       }
@@ -2807,16 +2844,47 @@ import Footer from '../components/Footer.astro';
       
       const renderContext = { canvasContext: baseCtx, viewport };
       page.render(renderContext).promise.then(() => {
-        // Draw base onto visible canvas
+        if (targetPageId !== pageId) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(previewBaseCanvas!, 0, 0);
-        // Apply edits on top
-        const edits = tempSessionEdits[currentEditingPageId] || { items: [], textColor: 'black' };
+        // Use tempModalEdits if viewing same page as editor, else use saved session edits
+        const isCurrentPage = pageId === currentEditingPageId;
+        const edits = isCurrentPage
+          ? { items: tempModalEdits, textColor: modalTextColor }
+          : (tempSessionEdits[pageId] || { items: [], textColor: 'black' });
         if (edits.items && edits.items.length > 0) {
           drawEditsOnCanvas(canvas, viewport, edits);
         }
+        // Update title
+        const titleEl = document.getElementById('preview-title') as HTMLElement;
+        const idx = sessionEditablePages.findIndex(p => p.id === pageId);
+        if (titleEl && idx >= 0) {
+          titleEl.textContent = `PAGE ${idx + 1} OF ${sessionEditablePages.length}`;
+        }
+        // Update nav buttons
+        const prevBtn = document.getElementById('preview-prev-btn') as HTMLButtonElement;
+        const nextBtn = document.getElementById('preview-next-btn') as HTMLButtonElement;
+        if (prevBtn) prevBtn.disabled = idx <= 0;
+        if (nextBtn) nextBtn.disabled = idx >= sessionEditablePages.length - 1;
+        previewPageIndex = idx;
       }).catch(() => {});
     });
+  }
+
+  function openPreviewOverlay() {
+    const overlay = document.getElementById('preview-overlay') as HTMLElement;
+    if (!overlay) return;
+    overlay.classList.remove('hidden');
+    
+    // Save current edits to session before rendering any page
+    if (currentEditingPageId) {
+      tempSessionEdits[currentEditingPageId] = {
+        items: tempModalEdits,
+        textColor: modalTextColor
+      };
+    }
+    
+    renderPreviewPage(currentEditingPageId);
   }
 
   function closePreviewOverlay() {
@@ -2832,6 +2900,14 @@ import Footer from '../components/Footer.astro';
     }
     (window as any).__previewViewport = null;
     if (overlay) overlay.classList.add('hidden');
+    // Reload current editing page to restore tempModalEdits from session
+    if (currentEditingPageId) {
+      const edits = tempSessionEdits[currentEditingPageId];
+      if (edits) {
+        tempModalEdits = JSON.parse(JSON.stringify(edits.items));
+        modalTextColor = edits.textColor;
+      }
+    }
   }
 
   function closeEditModal() {
