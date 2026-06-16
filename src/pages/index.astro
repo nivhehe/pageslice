@@ -2708,8 +2708,8 @@ import Footer from '../components/Footer.astro';
       
       await renderTextOverlays(page, viewport, pageId, edits, canvas);
       
-      if (tempSessionEdits[pageId]) {
-        drawEditsOnCanvas(canvas, viewport, edits);
+      if (tempModalEdits.length > 0) {
+        drawEditsOnCanvas(canvas, viewport, { items: tempModalEdits, textColor: modalTextColor });
       }
     } catch (err: any) {
       if (err && err.name === 'RenderingCancelledException') {
@@ -2908,6 +2908,8 @@ import Footer from '../components/Footer.astro';
         modalTextColor = edits.textColor;
       }
     }
+    // Redraw the editor canvas to reflect the restored edits
+    redrawEditCanvas();
   }
 
   function closeEditModal() {
