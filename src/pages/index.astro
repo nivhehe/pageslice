@@ -915,6 +915,7 @@ import Footer from '../components/Footer.astro';
   let activeSegmentIndex: number | null = null;
   let previewBaseCanvas: HTMLCanvasElement | null = null;
   let previewPageIndex = 0;
+  let _redrawRafId = 0;
 
   // Sanitizes a string for drawing with PDF standard fonts (WinAnsiEncoding)
   function sanitizeTextForWinAnsi(text: string): string {
@@ -2120,24 +2121,18 @@ import Footer from '../components/Footer.astro';
 
   function redrawEditCanvas() {
     if (!currentEditingPageId) return;
-    const canvas = document.getElementById('edit-page-canvas') as HTMLCanvasElement;
-    if (!canvas || !cleanOffscreenCanvas || !currentViewport) return;
-    
-    const context = canvas.getContext('2d');
-    if (!context) return;
-    
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.drawImage(cleanOffscreenCanvas, 0, 0);
-    
-    const edits = {
-      items: tempModalEdits,
-      textColor: modalTextColor
-    };
-    
-    drawEditsOnCanvas(canvas, currentViewport, edits);
-    
-    // Sync preview overlay if visible
-    updatePreviewCanvas();
+    if (_redrawRafId) cancelAnimationFrame(_redrawRafId);
+    _redrawRafId = requestAnimationFrame(() => {
+      _redrawRafId = 0;
+      const canvas = document.getElementById('edit-page-canvas') as HTMLCanvasElement;
+      if (!canvas || !cleanOffscreenCanvas || !currentViewport) return;
+      const context = canvas.getContext('2d');
+      if (!context) return;
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(cleanOffscreenCanvas, 0, 0);
+      drawEditsOnCanvas(canvas, currentViewport, { items: tempModalEdits, textColor: modalTextColor });
+      updatePreviewCanvas();
+    });
   }
 
   async function renderEditCanvas(pageId: string) {
