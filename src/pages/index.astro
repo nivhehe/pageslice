@@ -893,6 +893,7 @@ import Footer from '../components/Footer.astro';
   let cleanOffscreenCanvas: HTMLCanvasElement | null = null;
   let currentViewport: any = null;
   let activeSegmentIndex: number | null = null;
+  let previewBaseCanvas: HTMLCanvasElement | null = null;
 
   // Sanitizes a string for drawing with PDF standard fonts (WinAnsiEncoding)
   function sanitizeTextForWinAnsi(text: string): string {
@@ -2093,6 +2094,9 @@ import Footer from '../components/Footer.astro';
     };
     
     drawEditsOnCanvas(canvas, currentViewport, edits);
+    
+    // Sync preview overlay if visible
+    updatePreviewCanvas();
   }
 
   async function renderEditCanvas(pageId: string) {
@@ -2730,6 +2734,25 @@ import Footer from '../components/Footer.astro';
 
   let previewVisible = false;
 
+  function updatePreviewCanvas() {
+    const overlay = document.getElementById('preview-overlay') as HTMLElement;
+    if (!overlay || overlay.classList.contains('hidden')) return;
+    const canvas = document.getElementById('preview-canvas') as HTMLCanvasElement;
+    if (!canvas || !previewBaseCanvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(previewBaseCanvas, 0, 0);
+    const edits = {
+      items: tempModalEdits,
+      textColor: modalTextColor
+    };
+    const previewViewport = (window as any).__previewViewport;
+    if (previewViewport) {
+      drawEditsOnCanvas(canvas, previewViewport, edits);
+    }
+  }
+
   function openPreviewOverlay() {
     const overlay = document.getElementById('preview-overlay') as HTMLElement;
     const canvas = document.getElementById('preview-canvas') as HTMLCanvasElement;
@@ -2763,6 +2786,7 @@ import Footer from '../components/Footer.astro';
       const scale = Math.min(scaleX, scaleY) * dpr;
       
       const viewport = page.getViewport({ scale });
+      (window as any).__previewViewport = viewport;
       
       canvas.style.width = (viewport.width / dpr) + 'px';
       canvas.style.height = (viewport.height / dpr) + 'px';
@@ -2772,8 +2796,21 @@ import Footer from '../components/Footer.astro';
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
       
-      const renderContext = { canvasContext: ctx, viewport };
+      // Store clean page render as base for live updates
+      if (!previewBaseCanvas) {
+        previewBaseCanvas = document.createElement('canvas');
+      }
+      previewBaseCanvas.width = viewport.width;
+      previewBaseCanvas.height = viewport.height;
+      const baseCtx = previewBaseCanvas.getContext('2d');
+      if (!baseCtx) return;
+      
+      const renderContext = { canvasContext: baseCtx, viewport };
       page.render(renderContext).promise.then(() => {
+        // Draw base onto visible canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(previewBaseCanvas!, 0, 0);
+        // Apply edits on top
         const edits = tempSessionEdits[currentEditingPageId] || { items: [], textColor: 'black' };
         if (edits.items && edits.items.length > 0) {
           drawEditsOnCanvas(canvas, viewport, edits);
@@ -2789,6 +2826,11 @@ import Footer from '../components/Footer.astro';
       canvas.width = 0;
       canvas.height = 0;
     }
+    if (previewBaseCanvas) {
+      previewBaseCanvas.width = 0;
+      previewBaseCanvas.height = 0;
+    }
+    (window as any).__previewViewport = null;
     if (overlay) overlay.classList.add('hidden');
   }
 
