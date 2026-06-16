@@ -620,13 +620,13 @@ import Footer from '../components/Footer.astro';
         <div class="relative z-10 flex flex-col h-full overflow-y-auto sm:overflow-hidden">
           <!-- Modal Header -->
           <div class="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-neutral-800 bg-canvas-soft/20 gap-2 shrink-0">
-            <div class="font-mono text-left">
+            <div class="font-mono text-left min-w-0">
               <span class="text-[10px] text-primary uppercase tracking-widest font-bold">EDITOR MODULE</span>
               <h2 id="edit-modal-title" class="text-sm font-bold text-white uppercase mt-0.5 truncate max-w-[180px] sm:max-w-[400px]">EDIT PAGE TEXT</h2>
             </div>
             
             <!-- Page Selector / Navigation Controls -->
-            <div class="flex items-center gap-2 font-mono text-xs">
+            <div class="flex items-center gap-2 font-mono text-xs shrink-0">
               <button 
                 id="edit-prev-btn" 
                 class="border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-lg p-1.5 sm:p-2 disabled:opacity-40 disabled:hover:border-neutral-800 disabled:hover:bg-transparent disabled:hover:text-mute cursor-pointer disabled:cursor-not-allowed"
@@ -2552,7 +2552,7 @@ import Footer from '../components/Footer.astro';
       editablePages.forEach((vp, index) => {
         const opt = document.createElement('option');
         opt.value = vp.id;
-        opt.textContent = `${String(index + 1).padStart(2, '0')} (${vp.fileName})`;
+        opt.textContent = String(index + 1).padStart(2, '0');
         opt.className = 'bg-neutral-950 text-white';
         pageSelect.appendChild(opt);
       });
@@ -2597,7 +2597,7 @@ import Footer from '../components/Footer.astro';
       editablePages.forEach((vp, index) => {
         const opt = document.createElement('option');
         opt.value = vp.id;
-        opt.textContent = `${String(index + 1).padStart(2, '0')} (${vp.fileName})`;
+        opt.textContent = String(index + 1).padStart(2, '0');
         opt.className = 'bg-neutral-950 text-white';
         pageSelect.appendChild(opt);
       });
