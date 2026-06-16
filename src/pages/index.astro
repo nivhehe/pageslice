@@ -611,65 +611,66 @@ import Footer from '../components/Footer.astro';
     <!-- STATE 4: Local Page Text Editor Modal -->
     <div 
       id="edit-modal" 
-      class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas-soft/80 backdrop-blur-md animate-fade-in"
+      class="hidden fixed inset-0 z-50 bg-canvas-soft/80 backdrop-blur-md animate-fade-in sm:flex sm:items-center sm:justify-center sm:p-4"
     >
-      <div class="border-0 sm:border border-neutral-800 bg-canvas rounded-none sm:rounded-2xl max-w-5xl w-full flex flex-col h-full sm:h-[90vh] relative overflow-y-auto sm:overflow-hidden shadow-2xl">
+      <div class="border-0 sm:border border-neutral-800 bg-canvas rounded-none sm:rounded-2xl max-w-5xl w-full flex flex-col h-full sm:h-[90vh] relative shadow-2xl">
         <!-- Matrix grid overlay -->
         <div class="absolute inset-0 spacex-grid opacity-5 pointer-events-none"></div>
 
-        <div class="relative z-10 flex flex-col h-full">
+        <div class="relative z-10 flex flex-col h-full overflow-y-auto sm:overflow-hidden">
           <!-- Modal Header -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-4 border-b border-neutral-800 bg-canvas-soft/20 gap-4">
+          <div class="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-neutral-800 bg-canvas-soft/20 gap-2 shrink-0">
             <div class="font-mono text-left">
               <span class="text-[10px] text-primary uppercase tracking-widest font-bold">EDITOR MODULE</span>
-              <h2 id="edit-modal-title" class="text-sm font-bold text-white uppercase mt-0.5 truncate max-w-[280px] sm:max-w-[400px]">EDIT PAGE TEXT</h2>
+              <h2 id="edit-modal-title" class="text-sm font-bold text-white uppercase mt-0.5 truncate max-w-[180px] sm:max-w-[400px]">EDIT PAGE TEXT</h2>
             </div>
             
             <!-- Page Selector / Navigation Controls -->
-            <div class="flex items-center gap-3 font-mono text-xs">
+            <div class="flex items-center gap-2 font-mono text-xs">
               <button 
                 id="edit-prev-btn" 
-                class="border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-lg p-2 disabled:opacity-40 disabled:hover:border-neutral-800 disabled:hover:bg-transparent disabled:hover:text-mute cursor-pointer disabled:cursor-not-allowed"
+                class="border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-lg p-1.5 sm:p-2 disabled:opacity-40 disabled:hover:border-neutral-800 disabled:hover:bg-transparent disabled:hover:text-mute cursor-pointer disabled:cursor-not-allowed"
                 title="Previous Page"
               >
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
               
-              <div class="flex items-center gap-1.5 border border-neutral-800 bg-canvas/60 rounded-lg px-3 py-1.5">
-                <span class="text-mute">PAGE</span>
+              <div class="flex items-center gap-1.5 border border-neutral-800 bg-canvas/60 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5">
+                <span class="text-mute hidden sm:inline">PAGE</span>
+                <span class="text-mute sm:hidden text-[9px]">PG</span>
                 <select 
                   id="edit-page-select" 
-                  class="bg-transparent border-none focus:outline-none text-white font-bold cursor-pointer text-center"
+                  class="bg-transparent border-none focus:outline-none text-white font-bold cursor-pointer text-center text-[11px] sm:text-xs"
                 >
                   <!-- Populate options dynamically -->
                 </select>
-                <span class="text-mute" id="edit-total-pages-label">OF 00</span>
+                <span class="text-mute text-[9px] sm:text-xs" id="edit-total-pages-label">OF 00</span>
               </div>
               
               <button 
                 id="edit-next-btn" 
-                class="border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-lg p-2 disabled:opacity-40 disabled:hover:border-neutral-800 disabled:hover:bg-transparent disabled:hover:text-mute cursor-pointer disabled:cursor-not-allowed"
+                class="border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-lg p-1.5 sm:p-2 disabled:opacity-40 disabled:hover:border-neutral-800 disabled:hover:bg-transparent disabled:hover:text-mute cursor-pointer disabled:cursor-not-allowed"
                 title="Next Page"
               >
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
               </button>
             </div>
             
-            <button id="edit-close-btn" class="text-mute hover:text-white transition-colors cursor-pointer" aria-label="Close editor">
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <button id="edit-close-btn" class="text-mute hover:text-white transition-colors cursor-pointer shrink-0" aria-label="Close editor">
+              <svg class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           <!-- Modal Body (Split view) -->
-          <div class="flex-1 overflow-y-auto sm:overflow-hidden p-4 sm:p-6 flex flex-col lg:flex-row gap-4 lg:gap-6">
+          <div class="flex-1 p-3 sm:p-6 flex flex-col lg:flex-row gap-3 sm:gap-6 min-h-0">
             <!-- Left Side: Interactive Page Layout Preview -->
-            <div class="flex-1 flex items-center justify-center bg-neutral-950 border border-neutral-800 rounded-xl relative overflow-auto p-4 min-h-[140px] sm:min-h-[200px] lg:min-h-0">
+            <div class="h-[120px] sm:h-[180px] lg:flex-1 lg:h-auto flex items-center justify-center bg-neutral-950 border border-neutral-800 rounded-xl relative overflow-hidden p-2 sm:p-4 lg:min-h-0">
               <div id="edit-canvas-container" class="relative shrink-0 m-auto">
                 <canvas id="edit-page-canvas" class="block pointer-events-none"></canvas>
                 <div id="edit-text-overlay" class="absolute inset-0 select-text pointer-events-auto"></div>
@@ -677,19 +678,19 @@ import Footer from '../components/Footer.astro';
             </div>
 
             <!-- Right Side: Text Edit Form (Detailed list of fields) -->
-            <div class="w-full lg:w-[400px] flex flex-col border border-neutral-800 rounded-xl bg-canvas-soft/10 overflow-hidden flex-none lg:flex-1 lg:h-full">
-              <div class="p-3 border-b border-neutral-800 bg-canvas-soft/20 font-mono text-[10px] uppercase tracking-wider text-mute flex justify-between items-center shrink-0">
+            <div class="w-full lg:w-[400px] flex flex-col border border-neutral-800 rounded-xl bg-canvas-soft/10 overflow-hidden">
+              <div class="p-2 sm:p-3 border-b border-neutral-800 bg-canvas-soft/20 font-mono text-[10px] uppercase tracking-wider text-mute flex justify-between items-center shrink-0">
                 <span>Text Segments List</span>
                 <span id="edit-segment-count" class="text-primary font-bold">0 Items</span>
               </div>
-              <div id="edit-text-list" class="flex-1 overflow-y-auto p-4 space-y-4">
+              <div id="edit-text-list" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
                 <!-- Text elements rendered as key-value textareas/inputs -->
               </div>
             </div>
           </div>
 
           <!-- Modal Footer -->
-          <div class="px-4 sm:px-6 py-4 border-t border-neutral-800 bg-canvas-soft/20 flex flex-wrap items-center justify-between gap-4 shrink-0">
+          <div class="px-3 sm:px-6 py-3 sm:py-4 border-t border-neutral-800 bg-canvas-soft/20 flex flex-wrap items-center justify-between gap-3 shrink-0">
             <div class="flex flex-wrap items-center gap-4 sm:gap-6">
 
               <!-- Text color options -->
@@ -2549,15 +2550,23 @@ import Footer from '../components/Footer.astro';
     const parentContainer = canvas.parentElement?.parentElement;
     const parentWidth = parentContainer && parentContainer.clientWidth > 0 ? parentContainer.clientWidth - 32 : 500;
     const parentHeight = parentContainer && parentContainer.clientHeight > 0 ? parentContainer.clientHeight - 32 : 550;
+    const isMobile = window.innerWidth < 1024;
     
     const originalViewport = page.getViewport({ scale: 1 });
     const ratio = originalViewport.width / originalViewport.height;
     
     let scale = 1;
-    if (parentWidth / parentHeight > ratio) {
-      scale = parentHeight / originalViewport.height;
+    if (isMobile) {
+      // On mobile, fit preview within fixed height container
+      const maxPreviewHeight = parentContainer?.clientHeight || 120;
+      scale = Math.min(maxPreviewHeight / originalViewport.height, (parentContainer?.clientWidth || 300) / originalViewport.width);
+      scale = Math.min(scale, 0.5); // cap at 0.5 on mobile to keep it compact
     } else {
-      scale = parentWidth / originalViewport.width;
+      if (parentWidth / parentHeight > ratio) {
+        scale = parentHeight / originalViewport.height;
+      } else {
+        scale = parentWidth / originalViewport.width;
+      }
     }
     const viewport = page.getViewport({ scale });
     currentViewport = viewport;
@@ -2648,13 +2657,24 @@ import Footer from '../components/Footer.astro';
 
   // Mobile keyboard handling: adjust edit modal height on visual viewport change
   if (window.visualViewport) {
+    let keyboardScrollTimeout: number;
     window.visualViewport.addEventListener('resize', () => {
       const editModal = document.getElementById('edit-modal') as HTMLElement;
       if (!editModal || editModal.classList.contains('hidden')) return;
-      const innerContainer = editModal.querySelector('div.max-w-5xl') as HTMLElement;
-      if (innerContainer) {
-        const vh = window.visualViewport?.height || window.innerHeight;
-        innerContainer.style.maxHeight = `${vh}px`;
+      const vh = window.visualViewport?.height || window.innerHeight;
+      const scrollable = editModal.querySelector('.relative.z-10') as HTMLElement;
+      if (scrollable) {
+        scrollable.style.minHeight = `${vh}px`;
+      }
+      // If keyboard is likely open (visual viewport shrunk), scroll active textarea into view
+      if (window.visualViewport && window.visualViewport.height < window.innerHeight * 0.8) {
+        clearTimeout(keyboardScrollTimeout);
+        keyboardScrollTimeout = window.setTimeout(() => {
+          const activeEl = document.activeElement as HTMLElement;
+          if (activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT')) {
+            activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 300);
       }
     });
   }
