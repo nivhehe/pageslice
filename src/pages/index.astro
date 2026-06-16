@@ -2231,29 +2231,63 @@ import Footer from '../components/Footer.astro';
     const ctx = canvas.getContext('2d');
     if (!ctx) return { r: 255, g: 255, b: 255 };
     
+    // 1. Sample page-wide background color (at 10, 10) as a default / fallback
+    let defaultBg = { r: 255, g: 255, b: 255 };
+    try {
+      const pageBgX = Math.max(0, Math.min(canvas.width - 1, 10));
+      const pageBgY = Math.max(0, Math.min(canvas.height - 1, 10));
+      const pageBgData = ctx.getImageData(pageBgX, pageBgY, 1, 1).data;
+      if (pageBgData[3] !== 0) {
+        defaultBg = { r: pageBgData[0], g: pageBgData[1], b: pageBgData[2] };
+      }
+    } catch (e) {
+      // ignore
+    }
+    
     const transformX = x || 0;
     const transformY = (y || 0) + (fontSize || 12) * 0.4;
     
     if (!viewport || typeof viewport.convertToViewportPoint !== 'function') {
-      return { r: 255, g: 255, b: 255 };
+      return defaultBg;
     }
 
     const [canvasX, canvasY] = viewport.convertToViewportPoint(transformX, transformY);
     
     if (isNaN(canvasX) || isNaN(canvasY) || !isFinite(canvasX) || !isFinite(canvasY)) {
-      return { r: 255, g: 255, b: 255 };
+      return defaultBg;
     }
     
     try {
-      // Gather multiple candidate points around the start of the text segment to avoid text characters
+      // 2. Sample two points to the left of the text (in the margin/space before text)
+      const sx1 = Math.max(0, Math.min(canvas.width - 1, Math.round(canvasX - 8)));
+      const sy1 = Math.max(0, Math.min(canvas.height - 1, Math.round(canvasY)));
+      const c1Data = ctx.getImageData(sx1, sy1, 1, 1).data;
+      
+      const sx2 = Math.max(0, Math.min(canvas.width - 1, Math.round(canvasX - 16)));
+      const sy2 = Math.max(0, Math.min(canvas.height - 1, Math.round(canvasY)));
+      const c2Data = ctx.getImageData(sx2, sy2, 1, 1).data;
+      
+      if (c1Data[3] !== 0 && c2Data[3] !== 0) {
+        const c1 = { r: c1Data[0], g: c1Data[1], b: c1Data[2] };
+        const c2 = { r: c2Data[0], g: c2Data[1], b: c2Data[2] };
+        
+        // If these two points are almost identical in color, it is a uniform local background color
+        const diff = Math.abs(c1.r - c2.r) + Math.abs(c1.g - c2.g) + Math.abs(c1.b - c2.b);
+        if (diff < 15) {
+          return c1;
+        }
+      }
+      
+      // 3. Fallback: Check all candidates and compare to defaultBg or pick brightest
       const candidates = [
         { x: canvasX - 8, y: canvasY },
         { x: canvasX - 16, y: canvasY },
-        { x: canvasX + 4, y: canvasY - (fontSize || 12) * 0.8 },
-        { x: 10, y: 10 } // Page-wide top-left margin fallback
+        { x: canvasX + 4, y: canvasY - (fontSize || 12) * 0.8 }
       ];
       
-      let bestColor = { r: 255, g: 255, b: 255, score: -1 };
+      let bestColor = { r: defaultBg.r, g: defaultBg.g, b: defaultBg.b, score: -1 };
+      const defaultBgScore = defaultBg.r + defaultBg.g + defaultBg.b;
+      const isDarkPage = defaultBgScore < 380;
       
       for (const cand of candidates) {
         const sx = Math.max(0, Math.min(canvas.width - 1, Math.round(cand.x)));
@@ -2265,27 +2299,38 @@ import Footer from '../components/Footer.astro';
         const r = imgData[0];
         const g = imgData[1];
         const b = imgData[2];
-        
-        // Background color is typically the brightest element (largest RGB sum)
         const score = r + g + b;
-        if (score > bestColor.score) {
-          bestColor = { r, g, b, score };
+        
+        if (isDarkPage) {
+          // On a dark page, we want the candidate closest in color to the default page background
+          const dist = Math.abs(r - defaultBg.r) + Math.abs(g - defaultBg.g) + Math.abs(b - defaultBg.b);
+          if (bestColor.score === -1 || dist < bestColor.score) {
+            bestColor = { r, g, b, score: dist };
+          }
+        } else {
+          // On a light page, the background is typically the brightest element (largest RGB sum)
+          if (score > bestColor.score) {
+            bestColor = { r, g, b, score };
+          }
         }
       }
       
       if (bestColor.score >= 0) {
-        // Fallback to pure white if the brightest candidate is still too dark (likely text/line)
-        if (bestColor.score < 300) {
-          return { r: 255, g: 255, b: 255 };
+        if (isDarkPage) {
+          return { r: bestColor.r, g: bestColor.g, b: bestColor.b };
+        } else {
+          // Fallback to defaultBg if the brightest candidate is still too dark on a light page
+          if (bestColor.score < 300) {
+            return defaultBg;
+          }
+          return { r: bestColor.r, g: bestColor.g, b: bestColor.b };
         }
-        return { r: bestColor.r, g: bestColor.g, b: bestColor.b };
       }
-      
-      return { r: 255, g: 255, b: 255 };
     } catch (e) {
-      console.warn("Failed to sample background color:", e);
-      return { r: 255, g: 255, b: 255 };
+      console.warn("Error sampling background color:", e);
     }
+    
+    return defaultBg;
   }
 
   async function renderTextOverlays(page: any, viewport: any, pageId: string, currentEdits: any, canvas: HTMLCanvasElement) {
