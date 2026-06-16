@@ -669,8 +669,8 @@ import Footer from '../components/Footer.astro';
 
           <!-- Modal Body (Split view) -->
           <div class="flex-1 p-3 sm:p-6 flex flex-col lg:flex-row gap-3 sm:gap-6 min-h-0">
-            <!-- Left Side: Interactive Page Layout Preview -->
-            <div class="h-[120px] sm:h-[180px] lg:flex-1 lg:h-auto flex items-center justify-center bg-neutral-950 border border-neutral-800 rounded-xl relative overflow-hidden p-2 sm:p-4 lg:min-h-0">
+            <!-- Left Side: Interactive Page Layout Preview (hidden on mobile) -->
+            <div class="hidden lg:flex lg:flex-1 lg:h-auto items-center justify-center bg-neutral-950 border border-neutral-800 rounded-xl relative overflow-hidden p-4 lg:min-h-0">
               <div id="edit-canvas-container" class="relative shrink-0 m-auto">
                 <canvas id="edit-page-canvas" class="block pointer-events-none"></canvas>
                 <div id="edit-text-overlay" class="absolute inset-0 select-text pointer-events-auto"></div>
