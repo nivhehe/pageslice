@@ -726,7 +726,17 @@ import Footer from '../components/Footer.astro';
 
             </div>
 
-            <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+            <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-end">
+              <button 
+                id="edit-preview-btn" 
+                class="lg:hidden border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-xl px-3 py-2.5 text-xs font-mono uppercase tracking-wider cursor-pointer"
+                title="Show page preview with changes"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
               <button 
                 id="edit-cancel-btn" 
                 class="border border-neutral-800 hover:border-red-500/50 hover:bg-red-500/10 text-mute hover:text-red-400 transition-all rounded-xl px-5 py-2.5 text-xs font-mono uppercase tracking-wider cursor-pointer"
@@ -1045,10 +1055,12 @@ import Footer from '../components/Footer.astro';
     const editCloseBtn = document.getElementById('edit-close-btn') as HTMLButtonElement;
     const editCancelBtn = document.getElementById('edit-cancel-btn') as HTMLButtonElement;
     const editSaveBtn = document.getElementById('edit-save-btn') as HTMLButtonElement;
+    const editPreviewBtn = document.getElementById('edit-preview-btn') as HTMLButtonElement;
     
     if (editCloseBtn) editCloseBtn.addEventListener('click', closeEditModal);
     if (editCancelBtn) editCancelBtn.addEventListener('click', closeEditModal);
     if (editSaveBtn) editSaveBtn.addEventListener('click', saveEditChanges);
+    if (editPreviewBtn) editPreviewBtn.addEventListener('click', toggleEditPreview);
     
     setupColorButtons();
     setupSessionPageSelector();
@@ -2679,7 +2691,31 @@ import Footer from '../components/Footer.astro';
     });
   }
 
+  let previewVisible = false;
+
+  function toggleEditPreview() {
+    previewVisible = !previewVisible;
+    const container = document.getElementById('edit-canvas-container');
+    const preview = container?.parentElement as HTMLElement;
+    if (!preview) return;
+    const btn = document.getElementById('edit-preview-btn') as HTMLButtonElement;
+    if (previewVisible) {
+      preview.classList.remove('hidden');
+      preview.classList.add('flex');
+      if (btn) {
+        btn.innerHTML = `<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>`;
+      }
+    } else {
+      preview.classList.add('hidden');
+      preview.classList.remove('flex');
+      if (btn) {
+        btn.innerHTML = `<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>`;
+      }
+    }
+  }
+
   function closeEditModal() {
+    if (previewVisible) toggleEditPreview();
     const editModal = document.getElementById('edit-modal') as HTMLElement;
     if (editModal) editModal.classList.add('hidden');
     currentEditingPageId = '';
