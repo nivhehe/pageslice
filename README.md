@@ -50,4 +50,4 @@ All commands are run from the root of the project:
 
 ## 📧 Support & Collaboration
 
-PageSlice is designed and maintained by **Nived Mohan** ([nivedmohan5423@gmail.com](mailto:nivedmohan5423@gmail.com)). Feel free to collaborate, report issues, or suggest new telemetry systems!
+PageSlice is designed and maintained by [Nived Mohan](https://www.linkedin.com/in/nived-mohan-23170432b/). Feel free to collaborate, report issues, or suggest new telemetry systems!
