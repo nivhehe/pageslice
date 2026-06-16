@@ -2082,16 +2082,16 @@ import Footer from '../components/Footer.astro';
         ctx.fillStyle = `rgb(${bg.r}, ${bg.g}, ${bg.b})`;
         ctx.fillRect(x, y - origFontSize * 0.95, origWidth * 1.05, coverHeight);
         
-        const fontName = item.fontNameMapped || 'Helvetica';
         let fontStyle = '';
         if (item.isBold) fontStyle += 'bold ';
         if (item.isItalic) fontStyle += 'italic ';
         
-        let fontFamily = 'sans-serif';
-        if (fontName.includes('Times')) fontFamily = 'serif';
-        else if (fontName.includes('Courier')) fontFamily = 'monospace';
-        
-        const cssFontFamily = item.fontNameOriginal ? `"${item.fontNameOriginal}", ${fontFamily}` : fontFamily;
+        let cssFontFamily = 'Helvetica, Arial, system-ui, sans-serif';
+        if (item.fontFamilyGroup === 'times') {
+          cssFontFamily = '"Times New Roman", Georgia, "Times", serif';
+        } else if (item.fontFamilyGroup === 'courier') {
+          cssFontFamily = '"Courier New", Consolas, Monaco, monospace';
+        }
         ctx.font = `${fontStyle}${fontSize}px ${cssFontFamily}`;
         
         let textColor = '#000000';
