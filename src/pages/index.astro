@@ -8,6 +8,20 @@ import Footer from '../components/Footer.astro';
   <!-- SpaceX-inspired dark container with custom grid backgrounds -->
   <main class="spacex-bg min-h-screen text-white relative overflow-hidden flex flex-col font-inter selection:bg-primary selection:text-on-primary">
     
+    <!-- Telemetry System Toast / Notification Popup -->
+    <div 
+      id="telemetry-toast" 
+      class="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 border border-primary/30 bg-neutral-950/90 backdrop-blur-md px-6 py-4 rounded-2xl shadow-[0_0_30px_rgba(159,232,112,0.1)] transition-all duration-500 ease-out translate-y-[-150%] opacity-0 pointer-events-none font-mono text-xs uppercase tracking-wider text-white"
+    >
+      <div class="h-2 w-2 rounded-full bg-primary animate-pulse glow-primary"></div>
+      <span>Tip: Drag pages to edit the order of pages</span>
+      <button id="toast-close-btn" class="ml-2 text-mute hover:text-white transition-colors cursor-pointer" aria-label="Dismiss message">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
     <!-- Top Decorative Line -->
     <div class="h-1 bg-gradient-to-right from-primary/20 via-primary to-primary/20 w-full"></div>
 
@@ -496,6 +510,14 @@ import Footer from '../components/Footer.astro';
 
               <!-- Right Actions Group -->
               <div class="flex items-center justify-between sm:justify-end gap-3 w-full lg:w-auto border-t lg:border-t-0 border-neutral-800/40 pt-4 lg:pt-0">
+                <!-- Edit Pages button -->
+                <button 
+                  id="edit-pages-btn" 
+                  class="hidden flex-1 sm:flex-initial border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-xl px-4 py-3 text-xs font-mono uppercase cursor-pointer text-center font-bold"
+                >
+                  Edit Pages
+                </button>
+
                 <!-- Add Files button -->
                 <button 
                   id="add-files-btn" 
@@ -586,6 +608,142 @@ import Footer from '../components/Footer.astro';
       </div>
     </div>
 
+    <!-- STATE 4: Local Page Text Editor Modal -->
+    <div 
+      id="edit-modal" 
+      class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas-soft/80 backdrop-blur-md animate-fade-in"
+    >
+      <div class="border border-neutral-800 bg-canvas rounded-2xl max-w-4xl w-full flex flex-col h-[90vh] relative overflow-hidden shadow-2xl">
+        <!-- Matrix grid overlay -->
+        <div class="absolute inset-0 spacex-grid opacity-5 pointer-events-none"></div>
+
+        <div class="relative z-10 flex flex-col h-full">
+          <!-- Modal Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-neutral-800 bg-canvas-soft/20 gap-4">
+            <div class="font-mono text-left">
+              <span class="text-[10px] text-primary uppercase tracking-widest font-bold">EDITOR MODULE</span>
+              <h2 id="edit-modal-title" class="text-sm font-bold text-white uppercase mt-0.5 truncate max-w-[280px] sm:max-w-[400px]">EDIT PAGE TEXT</h2>
+            </div>
+            
+            <!-- Page Selector / Navigation Controls -->
+            <div class="flex items-center gap-3 font-mono text-xs">
+              <button 
+                id="edit-prev-btn" 
+                class="border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-lg p-2 disabled:opacity-40 disabled:hover:border-neutral-800 disabled:hover:bg-transparent disabled:hover:text-mute cursor-pointer disabled:cursor-not-allowed"
+                title="Previous Page"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              <div class="flex items-center gap-1.5 border border-neutral-800 bg-canvas/60 rounded-lg px-3 py-1.5">
+                <span class="text-mute">PAGE</span>
+                <select 
+                  id="edit-page-select" 
+                  class="bg-transparent border-none focus:outline-none text-white font-bold cursor-pointer text-center"
+                >
+                  <!-- Populate options dynamically -->
+                </select>
+                <span class="text-mute" id="edit-total-pages-label">OF 00</span>
+              </div>
+              
+              <button 
+                id="edit-next-btn" 
+                class="border border-neutral-800 hover:border-primary/50 hover:bg-neutral-900 text-mute hover:text-primary transition-all rounded-lg p-2 disabled:opacity-40 disabled:hover:border-neutral-800 disabled:hover:bg-transparent disabled:hover:text-mute cursor-pointer disabled:cursor-not-allowed"
+                title="Next Page"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+            
+            <button id="edit-close-btn" class="text-mute hover:text-white transition-colors cursor-pointer" aria-label="Close editor">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Modal Body (Split view) -->
+          <div class="flex-1 overflow-hidden p-6 flex flex-col lg:flex-row gap-6 h-[calc(100%-120px)]">
+            <!-- Left Side: Interactive Page Layout Preview -->
+            <div class="flex-1 flex items-center justify-center bg-neutral-950 border border-neutral-800 rounded-xl relative overflow-auto p-4 min-h-[300px] lg:min-h-0">
+              <div id="edit-canvas-container" class="relative shrink-0 m-auto">
+                <canvas id="edit-page-canvas" class="block pointer-events-none"></canvas>
+                <div id="edit-text-overlay" class="absolute inset-0 select-text pointer-events-auto"></div>
+              </div>
+            </div>
+
+            <!-- Right Side: Text Edit Form (Detailed list of fields) -->
+            <div class="w-full lg:w-[350px] flex flex-col border border-neutral-800 rounded-xl bg-canvas-soft/10 overflow-hidden h-full">
+              <div class="p-3 border-b border-neutral-800 bg-canvas-soft/20 font-mono text-[10px] uppercase tracking-wider text-mute flex justify-between items-center shrink-0">
+                <span>Text Segments List</span>
+                <span id="edit-segment-count" class="text-primary font-bold">0 Items</span>
+              </div>
+              <div id="edit-text-list" class="flex-1 overflow-y-auto p-4 space-y-4">
+                <!-- Text elements rendered as key-value textareas/inputs -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="px-6 py-4 border-t border-neutral-800 bg-canvas-soft/20 flex flex-wrap items-center justify-between gap-4 shrink-0">
+            <div class="flex flex-wrap items-center gap-6">
+
+              <!-- Text color options -->
+              <div class="flex flex-col gap-1 text-left font-mono">
+                <span class="text-[9px] text-mute uppercase tracking-wider">Text Color</span>
+                <div class="flex gap-2">
+                  <button type="button" class="w-5 h-5 rounded-full border border-neutral-700 bg-black cursor-pointer hover:scale-110 transition-transform active:scale-95 ring-2 ring-primary ring-offset-2 ring-offset-canvas" id="color-black-btn" title="Black (Default)"></button>
+                  <button type="button" class="w-5 h-5 rounded-full border border-neutral-700 bg-white cursor-pointer hover:scale-110 transition-transform active:scale-95" id="color-white-btn" title="White"></button>
+                  <button type="button" class="w-5 h-5 rounded-full border border-neutral-700 bg-red-600 cursor-pointer hover:scale-110 transition-transform active:scale-95" id="color-red-btn" title="Red"></button>
+                  <button type="button" class="w-5 h-5 rounded-full border border-neutral-700 bg-blue-600 cursor-pointer hover:scale-110 transition-transform active:scale-95" id="color-blue-btn" title="Blue"></button>
+                </div>
+              </div>
+
+              <!-- Font size options -->
+              <div class="flex flex-col gap-1 text-left font-mono">
+                <span class="text-[9px] text-mute uppercase tracking-wider">Font Size</span>
+                <div class="flex items-center gap-1 bg-neutral-950 border border-neutral-800 rounded-lg p-0.5">
+                  <button type="button" id="font-size-dec-btn" class="w-6 h-6 flex items-center justify-center rounded bg-canvas-soft hover:bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-white cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed select-none font-bold text-xs" disabled title="Decrease Font Size">-</button>
+                  <span id="font-size-display-val" class="text-xs font-bold px-2 text-white min-w-[28px] text-center select-none">--</span>
+                  <button type="button" id="font-size-inc-btn" class="w-6 h-6 flex items-center justify-center rounded bg-canvas-soft hover:bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-white cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed select-none font-bold text-xs" disabled title="Increase Font Size">+</button>
+                </div>
+              </div>
+
+              <!-- Font style options -->
+              <div class="flex flex-col gap-1 text-left font-mono">
+                <span class="text-[9px] text-mute uppercase tracking-wider">Style</span>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" id="style-bold-btn" class="w-6 h-6 flex items-center justify-center rounded border border-neutral-800 bg-canvas hover:bg-neutral-900 hover:border-neutral-700 text-white font-bold cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed select-none text-xs transition-colors" disabled title="Bold">B</button>
+                  <button type="button" id="style-italic-btn" class="w-6 h-6 flex items-center justify-center rounded border border-neutral-800 bg-canvas hover:bg-neutral-900 hover:border-neutral-700 text-white italic cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed select-none text-xs transition-colors" disabled title="Italic">I</button>
+                  <button type="button" id="style-underline-btn" class="w-6 h-6 flex items-center justify-center rounded border border-neutral-800 bg-canvas hover:bg-neutral-900 hover:border-neutral-700 text-white underline cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed select-none text-xs transition-colors" disabled title="Underline">U</button>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="flex items-center gap-3">
+              <button 
+                id="edit-cancel-btn" 
+                class="border border-neutral-800 hover:border-red-500/50 hover:bg-red-500/10 text-mute hover:text-red-400 transition-all rounded-xl px-5 py-2.5 text-xs font-mono uppercase tracking-wider cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button 
+                id="edit-save-btn" 
+                class="bg-primary text-on-primary hover:bg-primary-active active:scale-95 transition-all rounded-xl px-6 py-2.5 text-xs font-mono font-bold uppercase tracking-wider glow-primary hover:glow-primary-strong cursor-pointer"
+              >
+                Apply Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Sticky Bottom Bar -->
     <footer 
       id="sticky-footer" 
@@ -668,7 +826,7 @@ import Footer from '../components/Footer.astro';
 
 <script>
   // Import PDF-Lib library compiled client-side by Vite
-  import { PDFDocument, StandardFonts } from 'pdf-lib';
+  import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 
   // Virtual Page layout interface
   interface VirtualPage {
@@ -686,6 +844,76 @@ import Footer from '../components/Footer.astro';
   let virtualPages: VirtualPage[] = [];
   let pageOrder: number[] = [];
   let selectedPages = new Set<string>();
+
+  // Editing state tracking
+  let pageEdits: { [key: string]: { items: any[], textColor: string } } = {};
+  let tempModalEdits: any[] = [];
+  let currentEditingPageId = '';
+  let modalTextColor = 'black';
+  let tempSessionEdits: { [key: string]: { items: any[], textColor: string } } = {};
+  let sessionEditablePages: VirtualPage[] = [];
+
+  // Render task tracking
+  let activeRenderTasks: { [key: string]: any } = {};
+  let activeEditCanvasRenderTask: any = null;
+  let cleanOffscreenCanvas: HTMLCanvasElement | null = null;
+  let currentViewport: any = null;
+  let activeSegmentIndex: number | null = null;
+
+  // Sanitizes a string for drawing with PDF standard fonts (WinAnsiEncoding)
+  function sanitizeTextForWinAnsi(text: string): string {
+    if (typeof text !== 'string') return '';
+    
+    // Replace common unsupported glyphs with ASCII/WinAnsi equivalents
+    const replacements: { [key: string]: string } = {
+      // Subscripts
+      '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4', '₅': '5', '₆': '6', '₇': '7', '₈': '8', '₉': '9',
+      '₊': '+', '₋': '-', '₌': '=', '₍': '(', '₎': ')',
+      // Superscripts
+      '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9',
+      '⁺': '+', '⁻': '-', '⁼': '=', '⁽': '(', '⁾': ')',
+      // Common Math/Greek
+      'α': 'alpha', 'β': 'beta', 'γ': 'gamma', 'δ': 'delta', 'θ': 'theta', 'λ': 'lambda', 'μ': 'mu', 'π': 'pi', 'σ': 'sigma', 'φ': 'phi', 'ω': 'omega',
+      'Δ': 'Delta', 'Ω': 'Omega',
+      '≈': '~', '≠': '!=', '≤': '<=', '≥': '>=', '±': '+/-', '×': '*', '÷': '/', '−': '-',
+      // Other symbols
+      '': 'Apple', '✔': 'Y', '✘': 'X', '★': '*', '☆': '*'
+    };
+    
+    let result = '';
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      if (replacements[char] !== undefined) {
+        result += replacements[char];
+        continue;
+      }
+      
+      const code = char.charCodeAt(0);
+      
+      // Check if it's within printable ASCII or standard ISO 8859-1 supplement, or special allowed characters
+      const isPrintable = (code >= 0x20 && code <= 0x7E) || (code >= 0xA0 && code <= 0xFF);
+      const isAllowedSpecial = 
+        code === 0x20AC || code === 0x201A || code === 0x0192 || code === 0x201E || code === 0x2026 || 
+        code === 0x2020 || code === 0x2021 || code === 0x02C6 || code === 0x2030 || code === 0x0160 || 
+        code === 0x2039 || code === 0x0152 || code === 0x017D || code === 0x2018 || code === 0x2019 || 
+        code === 0x201C || code === 0x201D || code === 0x2022 || code === 0x2013 || code === 0x2014 || 
+        code === 0x02DC || code === 0x2122 || code === 0x0161 || code === 0x203A || code === 0x0153 || 
+        code === 0x017E || code === 0x0178;
+        
+      if (isPrintable || isAllowedSpecial) {
+        result += char;
+      } else if (code === 0x09) { // Tab
+        result += '    ';
+      } else if (code === 0x0A || code === 0x0D) { // Newline / carriage return
+        result += ' ';
+      } else {
+        // Replace with fallback character instead of crashing
+        result += '?';
+      }
+    }
+    return result;
+  }
+
 
   // Decryption state tracking
   let pendingFilesList: File[] | null = null;
@@ -734,6 +962,11 @@ import Footer from '../components/Footer.astro';
   const selectedCountLabel = document.getElementById('selected-count-label') as HTMLElement;
   const extractBtn = document.getElementById('extract-btn') as HTMLButtonElement;
   const compilingLoader = document.getElementById('compiling-loader') as HTMLElement;
+
+  // Telemetry Toast
+  const telemetryToast = document.getElementById('telemetry-toast') as HTMLElement;
+  const toastCloseBtn = document.getElementById('toast-close-btn') as HTMLButtonElement;
+  let toastTimeout: number;
 
   // Initialize
   setupEventListeners();
@@ -802,6 +1035,45 @@ import Footer from '../components/Footer.astro';
       if (e.key === 'Enter') submitPassword();
     });
     decryptCancelBtn.addEventListener('click', abortDecryption);
+
+    // Edit pages control button click
+    const editPagesBtn = document.getElementById('edit-pages-btn') as HTMLButtonElement;
+    if (editPagesBtn) editPagesBtn.addEventListener('click', openGlobalEditModal);
+
+    // Edit modal button actions
+    const editCloseBtn = document.getElementById('edit-close-btn') as HTMLButtonElement;
+    const editCancelBtn = document.getElementById('edit-cancel-btn') as HTMLButtonElement;
+    const editSaveBtn = document.getElementById('edit-save-btn') as HTMLButtonElement;
+    
+    if (editCloseBtn) editCloseBtn.addEventListener('click', closeEditModal);
+    if (editCancelBtn) editCancelBtn.addEventListener('click', closeEditModal);
+    if (editSaveBtn) editSaveBtn.addEventListener('click', saveEditChanges);
+    
+    setupColorButtons();
+    setupSessionPageSelector();
+    setupStyleControlButtons();
+
+    // Toast Dismiss Event
+    if (toastCloseBtn) {
+      toastCloseBtn.addEventListener('click', hideToast);
+    }
+  }
+
+  // Toast Control Helpers
+  function showToast() {
+    if (!telemetryToast) return;
+    clearTimeout(toastTimeout);
+    telemetryToast.classList.remove('translate-y-[-150%]', 'opacity-0', 'pointer-events-none');
+    telemetryToast.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+    
+    // Auto-hide after 6 seconds
+    toastTimeout = window.setTimeout(hideToast, 6000);
+  }
+
+  function hideToast() {
+    if (!telemetryToast) return;
+    telemetryToast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+    telemetryToast.classList.add('translate-y-[-150%]', 'opacity-0', 'pointer-events-none');
   }
 
   // File Drag-Drop Event Helpers
@@ -882,7 +1154,7 @@ import Footer from '../components/Footer.astro';
       
       pageLines.forEach((line, index) => {
         if (!line.trim()) return;
-        page.drawText(line, {
+        page.drawText(sanitizeTextForWinAnsi(line), {
           x: 50,
           y: 730 - index * 18,
           size: 10.5,
@@ -954,7 +1226,7 @@ import Footer from '../components/Footer.astro';
       }
 
       lines.slice(0, 22).forEach((line, index) => {
-        page.drawText(line, {
+        page.drawText(sanitizeTextForWinAnsi(line), {
           x: 50,
           y: 530 - index * 22,
           size: 12.5,
@@ -1098,7 +1370,7 @@ import Footer from '../components/Footer.astro';
           try {
             const page = await pdfJsDoc.getPage(p + 1);
             const textObj = await page.getTextContent();
-            textStr = textObj.items.map((item: any) => item.str).join(' ');
+            textStr = textObj.items.filter((item: any) => item && typeof item.str === 'string').map((item: any) => item.str).join(' ');
           } catch (err) {
             console.error(`Error extracting page text:`, err);
           }
@@ -1155,6 +1427,24 @@ import Footer from '../components/Footer.astro';
       // View Transitions / Show dashboard
       dropzoneSection.classList.add('hidden');
       dashboardSection.classList.remove('hidden');
+
+      // Show/hide Edit Pages button based on whether document files exist
+      const hasEditableFiles = virtualPages.some(vp => {
+        const ext = vp.fileName.split('.').pop()?.toLowerCase() || '';
+        return ['pdf', 'pptx', 'docx'].includes(ext);
+      });
+      
+      const editPagesBtn = document.getElementById('edit-pages-btn') as HTMLButtonElement;
+      if (editPagesBtn) {
+        if (hasEditableFiles) {
+          editPagesBtn.classList.remove('hidden');
+        } else {
+          editPagesBtn.classList.add('hidden');
+        }
+      }
+
+      // Show toast notification to drag-reorder pages
+      showToast();
     } catch (err) {
       console.error(err);
       showError('PARSING ERROR: Unable to read file data locally. Document may be encrypted or corrupted.');
@@ -1174,6 +1464,9 @@ import Footer from '../components/Footer.astro';
       const vp = virtualPages[virtualIndex];
       const card = document.createElement('div');
       
+      const ext = vp.fileName.split('.').pop()?.toLowerCase() || '';
+      const isEditable = ['pdf', 'pptx', 'docx'].includes(ext);
+      
       // Tailwind CSS Classes for the technical SpaceX page card
       card.className = `group aspect-[3/4] relative bg-canvas-soft/20 hover:bg-canvas-soft border border-neutral-800 hover:border-neutral-700 hover:scale-[1.02] cursor-pointer rounded-xl overflow-hidden transition-all duration-300 select-none flex flex-col p-3`;
       card.setAttribute('data-page-index', virtualIndex.toString());
@@ -1183,6 +1476,12 @@ import Footer from '../components/Footer.astro';
 
       // Card layout: show visual index, original index, and the file name it belongs to
       card.innerHTML = `
+        <!-- Render Canvas Container (actual preview canvas) -->
+        <div class="flex-1 w-full aspect-[3/4] overflow-hidden rounded bg-neutral-950 flex items-center justify-center border border-neutral-900 relative">
+          <canvas id="canvas-page-${vp.id}" class="max-w-full max-h-full object-contain pointer-events-none transition-all duration-300 group-hover:scale-[1.03]"></canvas>
+          <div id="loader-page-${vp.id}" class="absolute inset-0 flex items-center justify-center bg-neutral-950 font-mono text-[9px] text-mute animate-pulse uppercase">RENDER…</div>
+        </div>
+
         <!-- Drag Handle / Dot icon in top-left -->
         <div class="absolute top-2.5 left-2.5 w-5 h-5 rounded-full border border-neutral-800/60 flex items-center justify-center bg-canvas/30 transition-all card-drag-handle opacity-0 group-hover:opacity-100 cursor-grab active:cursor-grabbing z-20">
           <svg class="h-3 w-3 text-mute" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -1197,11 +1496,14 @@ import Footer from '../components/Footer.astro';
           </svg>
         </div>
 
-        <!-- Render Canvas Container (actual preview canvas) -->
-        <div class="flex-1 w-full aspect-[3/4] overflow-hidden rounded bg-neutral-950 flex items-center justify-center border border-neutral-900 relative">
-          <canvas id="canvas-page-${vp.id}" class="max-w-full max-h-full object-contain pointer-events-none transition-all duration-300 group-hover:scale-[1.03]"></canvas>
-          <div id="loader-page-${vp.id}" class="absolute inset-0 flex items-center justify-center bg-neutral-950 font-mono text-[9px] text-mute animate-pulse uppercase">RENDER…</div>
-        </div>
+        <!-- Float Edit Button (only for doc files, hidden on hover for images) -->
+        ${isEditable ? `
+          <div class="absolute bottom-16 right-2.5 w-8 h-8 rounded-full border border-neutral-800 bg-neutral-950/90 text-mute hover:text-primary hover:border-primary/50 hover:scale-110 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 z-30 cursor-pointer card-edit-btn" title="Edit text content">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </div>
+        ` : ''}
 
         <!-- Divider line -->
         <div class="h-[1px] bg-neutral-800/80 my-2.5"></div>
@@ -1218,12 +1520,22 @@ import Footer from '../components/Footer.astro';
         </div>
       `;
 
-      // Click card selects it (unless drag handle is targeted)
+      // Click card selects it (unless drag handle or edit button is targeted)
       card.addEventListener('click', (e) => {
         const target = e.target as HTMLElement;
-        if (target.closest('.card-drag-handle')) return;
+        if (target.closest('.card-drag-handle') || target.closest('.card-edit-btn')) return;
         togglePageSelection(vp.id);
       });
+
+      if (isEditable) {
+        const editBtn = card.querySelector('.card-edit-btn');
+        if (editBtn) {
+          editBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openEditModal(vp.id);
+          });
+        }
+      }
 
       // Hook up native HTML5 Drag and Drop event listeners
       setupDragEvents(card, virtualIndex);
@@ -1312,17 +1624,39 @@ import Footer from '../components/Footer.astro';
       canvas.width = viewport.width;
       canvas.height = viewport.height;
 
+      // Cancel existing rendering task for this specific page thumbnail if active
+      if (activeRenderTasks[pageId]) {
+        try {
+          activeRenderTasks[pageId].cancel();
+        } catch (cancelErr) {
+          // Ignore cancellation errors
+        }
+      }
+
       const renderContext = {
         canvasContext: context,
         viewport: viewport
       };
 
-      await page.render(renderContext).promise;
+      const renderTask = page.render(renderContext);
+      activeRenderTasks[pageId] = renderTask;
+
+      await renderTask.promise;
+      delete activeRenderTasks[pageId];
+
+      // Draw existing edits on the thumbnail canvas
+      if (pageEdits[pageId]) {
+        drawEditsOnCanvas(canvas, viewport, pageEdits[pageId]);
+      }
 
       // Hide loader
       const loader = document.getElementById(`loader-page-${pageId}`);
       if (loader) loader.classList.add('hidden');
-    } catch (err) {
+    } catch (err: any) {
+      if (err && err.name === 'RenderingCancelledException') {
+        // Safe to ignore since we cancelled it ourselves
+        return;
+      }
       console.error(`Error rendering page thumbnail ${pageId}:`, err);
       const loader = document.getElementById(`loader-page-${pageId}`);
       if (loader) loader.textContent = 'ERROR';
@@ -1376,6 +1710,920 @@ import Footer from '../components/Footer.astro';
     resetState();
     pdfInput.value = '';
     addFilesInput.value = '';
+  }
+
+  // ==========================================
+  // PDF Editing and Font Mapping Module
+  // ==========================================
+
+  function mapFontName(originalFontName: string): any {
+    const name = (originalFontName || '').toLowerCase();
+    const isBold = name.includes('bold') || name.includes('heavy') || name.includes('black') || name.includes('w-700') || name.includes('w-800') || name.includes('w-900') || name.includes('g_d0_f2');
+    const isItalic = name.includes('italic') || name.includes('oblique') || name.includes('slanted') || name.includes('skewed');
+
+    if (name.includes('times') || name.includes('roman') || name.includes('serif') || name.includes('georgia')) {
+      if (isBold && isItalic) return StandardFonts.TimesRomanBoldItalic;
+      if (isBold) return StandardFonts.TimesRomanBold;
+      if (isItalic) return StandardFonts.TimesRomanItalic;
+      return StandardFonts.TimesRoman;
+    }
+
+    if (name.includes('courier') || name.includes('mono') || name.includes('consolas') || name.includes('code') || name.includes('monospace')) {
+      if (isBold && isItalic) return StandardFonts.CourierBoldOblique;
+      if (isBold) return StandardFonts.CourierBold;
+      if (isItalic) return StandardFonts.CourierOblique;
+      return StandardFonts.Courier;
+    }
+
+    // Default to Helvetica
+    if (isBold && isItalic) return StandardFonts.HelveticaBoldOblique;
+    if (isBold) return StandardFonts.HelveticaBold;
+    if (isItalic) return StandardFonts.HelveticaOblique;
+    return StandardFonts.Helvetica;
+  }
+
+  function setupColorButtons() {
+    const colorBlack = document.getElementById('color-black-btn') as HTMLButtonElement;
+    const colorWhite = document.getElementById('color-white-btn') as HTMLButtonElement;
+    const colorRed = document.getElementById('color-red-btn') as HTMLButtonElement;
+    const colorBlue = document.getElementById('color-blue-btn') as HTMLButtonElement;
+    
+    if (!colorBlack || !colorWhite || !colorRed || !colorBlue) return;
+
+    function setTextColorSelected(color: string) {
+      modalTextColor = color;
+      [colorBlack, colorWhite, colorRed, colorBlue].forEach(btn => btn.classList.remove('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-canvas'));
+      if (color === 'black') colorBlack.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-canvas');
+      else if (color === 'white') colorWhite.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-canvas');
+      else if (color === 'red') colorRed.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-canvas');
+      else if (color === 'blue') colorBlue.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-canvas');
+      
+      if (currentEditingPageId) {
+        redrawEditCanvas();
+      }
+    }
+    
+    colorBlack.addEventListener('click', () => setTextColorSelected('black'));
+    colorWhite.addEventListener('click', () => setTextColorSelected('white'));
+    colorRed.addEventListener('click', () => setTextColorSelected('red'));
+    colorBlue.addEventListener('click', () => setTextColorSelected('blue'));
+    
+    // Bind to window for external state sync
+    (window as any).setModalTextColor = setTextColorSelected;
+  }
+
+  function getStandardFontName(family: string, isBold: boolean, isItalic: boolean): any {
+    if (family === 'times') {
+      if (isBold && isItalic) return StandardFonts.TimesRomanBoldItalic;
+      if (isBold) return StandardFonts.TimesRomanBold;
+      if (isItalic) return StandardFonts.TimesRomanItalic;
+      return StandardFonts.TimesRoman;
+    }
+    if (family === 'courier') {
+      if (isBold && isItalic) return StandardFonts.CourierBoldOblique;
+      if (isBold) return StandardFonts.CourierBold;
+      if (isItalic) return StandardFonts.CourierOblique;
+      return StandardFonts.Courier;
+    }
+    // Default to Helvetica
+    if (isBold && isItalic) return StandardFonts.HelveticaBoldOblique;
+    if (isBold) return StandardFonts.HelveticaBold;
+    if (isItalic) return StandardFonts.HelveticaOblique;
+    return StandardFonts.Helvetica;
+  }
+
+  function setActiveSegment(idx: number | null, editItem: any = null) {
+    activeSegmentIndex = idx;
+    
+    const sizeDecBtn = document.getElementById('font-size-dec-btn') as HTMLButtonElement;
+    const sizeIncBtn = document.getElementById('font-size-inc-btn') as HTMLButtonElement;
+    const sizeDisplay = document.getElementById('font-size-display-val') as HTMLElement;
+    const boldBtn = document.getElementById('style-bold-btn') as HTMLButtonElement;
+    const italicBtn = document.getElementById('style-italic-btn') as HTMLButtonElement;
+    const underlineBtn = document.getElementById('style-underline-btn') as HTMLButtonElement;
+    
+    if (!sizeDecBtn || !sizeIncBtn || !sizeDisplay || !boldBtn || !italicBtn || !underlineBtn) return;
+    
+    if (idx === null || !editItem) {
+      sizeDecBtn.disabled = true;
+      sizeIncBtn.disabled = true;
+      sizeDisplay.textContent = '--';
+      boldBtn.disabled = true;
+      italicBtn.disabled = true;
+      underlineBtn.disabled = true;
+      
+      [boldBtn, italicBtn, underlineBtn].forEach(btn => btn.classList.remove('bg-primary/20', 'border-primary', 'text-primary'));
+      return;
+    }
+    
+    sizeDecBtn.disabled = false;
+    sizeIncBtn.disabled = false;
+    sizeDisplay.textContent = Math.round(editItem.fontSize).toString();
+    
+    boldBtn.disabled = false;
+    italicBtn.disabled = false;
+    underlineBtn.disabled = false;
+    
+    if (editItem.isBold) {
+      boldBtn.classList.add('bg-primary/20', 'border-primary', 'text-primary');
+    } else {
+      boldBtn.classList.remove('bg-primary/20', 'border-primary', 'text-primary');
+    }
+    
+    if (editItem.isItalic) {
+      italicBtn.classList.add('bg-primary/20', 'border-primary', 'text-primary');
+    } else {
+      italicBtn.classList.remove('bg-primary/20', 'border-primary', 'text-primary');
+    }
+    
+    if (editItem.isUnderlined) {
+      underlineBtn.classList.add('bg-primary/20', 'border-primary', 'text-primary');
+    } else {
+      underlineBtn.classList.remove('bg-primary/20', 'border-primary', 'text-primary');
+    }
+  }
+
+  function setupStyleControlButtons() {
+    const sizeDecBtn = document.getElementById('font-size-dec-btn') as HTMLButtonElement;
+    const sizeIncBtn = document.getElementById('font-size-inc-btn') as HTMLButtonElement;
+    const boldBtn = document.getElementById('style-bold-btn') as HTMLButtonElement;
+    const italicBtn = document.getElementById('style-italic-btn') as HTMLButtonElement;
+    const underlineBtn = document.getElementById('style-underline-btn') as HTMLButtonElement;
+    
+    if (!sizeDecBtn || !sizeIncBtn || !boldBtn || !italicBtn || !underlineBtn) return;
+    
+    sizeDecBtn.addEventListener('click', () => {
+      if (activeSegmentIndex === null) return;
+      const editItem = tempModalEdits.find(item => item.index === activeSegmentIndex);
+      if (editItem) {
+        editItem.fontSize = Math.max(4, editItem.fontSize - 1);
+        setActiveSegment(activeSegmentIndex, editItem);
+        redrawEditCanvas();
+        const listContainer = document.getElementById('edit-text-list') as HTMLElement;
+        const listItem = listContainer?.querySelector(`textarea[data-index="${activeSegmentIndex}"]`)?.closest('div') as HTMLElement;
+        if (listItem) markAsModified(listItem, editItem);
+      }
+    });
+    
+    sizeIncBtn.addEventListener('click', () => {
+      if (activeSegmentIndex === null) return;
+      const editItem = tempModalEdits.find(item => item.index === activeSegmentIndex);
+      if (editItem) {
+        editItem.fontSize = Math.min(100, editItem.fontSize + 1);
+        setActiveSegment(activeSegmentIndex, editItem);
+        redrawEditCanvas();
+        const listContainer = document.getElementById('edit-text-list') as HTMLElement;
+        const listItem = listContainer?.querySelector(`textarea[data-index="${activeSegmentIndex}"]`)?.closest('div') as HTMLElement;
+        if (listItem) markAsModified(listItem, editItem);
+      }
+    });
+    
+    boldBtn.addEventListener('click', () => {
+      if (activeSegmentIndex === null) return;
+      const editItem = tempModalEdits.find(item => item.index === activeSegmentIndex);
+      if (editItem) {
+        editItem.isBold = !editItem.isBold;
+        editItem.fontNameMapped = getStandardFontName(editItem.fontFamilyGroup || 'helvetica', editItem.isBold, editItem.isItalic);
+        setActiveSegment(activeSegmentIndex, editItem);
+        redrawEditCanvas();
+        const listContainer = document.getElementById('edit-text-list') as HTMLElement;
+        const listItem = listContainer?.querySelector(`textarea[data-index="${activeSegmentIndex}"]`)?.closest('div') as HTMLElement;
+        if (listItem) markAsModified(listItem, editItem);
+      }
+    });
+    
+    italicBtn.addEventListener('click', () => {
+      if (activeSegmentIndex === null) return;
+      const editItem = tempModalEdits.find(item => item.index === activeSegmentIndex);
+      if (editItem) {
+        editItem.isItalic = !editItem.isItalic;
+        editItem.fontNameMapped = getStandardFontName(editItem.fontFamilyGroup || 'helvetica', editItem.isBold, editItem.isItalic);
+        setActiveSegment(activeSegmentIndex, editItem);
+        redrawEditCanvas();
+        const listContainer = document.getElementById('edit-text-list') as HTMLElement;
+        const listItem = listContainer?.querySelector(`textarea[data-index="${activeSegmentIndex}"]`)?.closest('div') as HTMLElement;
+        if (listItem) markAsModified(listItem, editItem);
+      }
+    });
+    
+    underlineBtn.addEventListener('click', () => {
+      if (activeSegmentIndex === null) return;
+      const editItem = tempModalEdits.find(item => item.index === activeSegmentIndex);
+      if (editItem) {
+        editItem.isUnderlined = !editItem.isUnderlined;
+        setActiveSegment(activeSegmentIndex, editItem);
+        redrawEditCanvas();
+        const listContainer = document.getElementById('edit-text-list') as HTMLElement;
+        const listItem = listContainer?.querySelector(`textarea[data-index="${activeSegmentIndex}"]`)?.closest('div') as HTMLElement;
+        if (listItem) markAsModified(listItem, editItem);
+      }
+    });
+  }
+
+  function drawEditsOnCanvas(canvas: HTMLCanvasElement, viewport: any, edits: any) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    ctx.save();
+    
+    edits.items.forEach((item: any) => {
+      const isModified = item.editedText !== item.originalText || 
+                         item.fontSize !== (item.originalFontSize || item.fontSize) || 
+                         item.isBold !== (item.originalIsBold || false) || 
+                         item.isItalic !== (item.originalIsItalic || false) || 
+                         item.isUnderlined;
+      if (isModified) {
+        const [x, y] = viewport.convertToViewportPoint(item.x, item.y);
+        const fontSize = item.fontSize * viewport.scale;
+        
+        // Compute cover rectangle using original size
+        const origFontSize = (item.originalFontSize || item.fontSize) * viewport.scale;
+        const origWidth = item.width * viewport.scale;
+        const coverHeight = origFontSize * 1.25;
+        
+        const bg = item.bgColor || { r: 255, g: 255, b: 255 };
+        ctx.fillStyle = `rgb(${bg.r}, ${bg.g}, ${bg.b})`;
+        ctx.fillRect(x, y - origFontSize * 0.95, origWidth * 1.05, coverHeight);
+        
+        const fontName = item.fontNameMapped || 'Helvetica';
+        let fontStyle = '';
+        if (item.isBold) fontStyle += 'bold ';
+        if (item.isItalic) fontStyle += 'italic ';
+        
+        let fontFamily = 'sans-serif';
+        if (fontName.includes('Times')) fontFamily = 'serif';
+        else if (fontName.includes('Courier')) fontFamily = 'monospace';
+        
+        const cssFontFamily = item.fontNameOriginal ? `"${item.fontNameOriginal}", ${fontFamily}` : fontFamily;
+        ctx.font = `${fontStyle}${fontSize}px ${cssFontFamily}`;
+        
+        let textColor = '#000000';
+        if (edits.textColor === 'white') textColor = '#ffffff';
+        else if (edits.textColor === 'red') textColor = '#dc2626';
+        else if (edits.textColor === 'blue') textColor = '#2563eb';
+        
+        ctx.fillStyle = textColor;
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText(item.editedText, x, y);
+        
+        if (item.isUnderlined) {
+          ctx.strokeStyle = textColor;
+          ctx.lineWidth = Math.max(1, fontSize * 0.07);
+          ctx.beginPath();
+          ctx.moveTo(x, y + fontSize * 0.1);
+          const textWidth = ctx.measureText(item.editedText).width;
+          ctx.lineTo(x + textWidth, y + fontSize * 0.1);
+          ctx.stroke();
+        }
+      }
+    });
+    
+    ctx.restore();
+  }
+
+  function redrawEditCanvas() {
+    if (!currentEditingPageId) return;
+    const canvas = document.getElementById('edit-page-canvas') as HTMLCanvasElement;
+    if (!canvas || !cleanOffscreenCanvas || !currentViewport) return;
+    
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(cleanOffscreenCanvas, 0, 0);
+    
+    const edits = {
+      items: tempModalEdits,
+      textColor: modalTextColor
+    };
+    
+    drawEditsOnCanvas(canvas, currentViewport, edits);
+  }
+
+  async function renderEditCanvas(pageId: string) {
+    const vp = virtualPages.find(p => p.id === pageId);
+    if (!vp) return;
+    
+    const pdfJsDoc = loadedPdfJsDocs[vp.fileIndex];
+    const page = await pdfJsDoc.getPage(vp.pageIndex + 1);
+    
+    const canvas = document.getElementById('edit-page-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    
+    const desiredHeight = 600;
+    const originalViewport = page.getViewport({ scale: 1 });
+    const scale = desiredHeight / originalViewport.height;
+    const viewport = page.getViewport({ scale });
+    
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    
+    const container = document.getElementById('edit-canvas-container') as HTMLElement;
+    if (container) {
+      container.style.width = viewport.width + 'px';
+      container.style.height = viewport.height + 'px';
+    }
+    
+    if (activeEditCanvasRenderTask) {
+      try {
+        activeEditCanvasRenderTask.cancel();
+      } catch (e) {}
+    }
+
+    const renderContext = {
+      canvasContext: context,
+      viewport: viewport
+    };
+    
+    try {
+      const renderTask = page.render(renderContext);
+      activeEditCanvasRenderTask = renderTask;
+      await renderTask.promise;
+      if (activeEditCanvasRenderTask === renderTask) {
+        activeEditCanvasRenderTask = null;
+      }
+      
+      const edits = pageEdits[pageId] || { items: [], textColor: 'black' };
+      if (pageEdits[pageId]) {
+        drawEditsOnCanvas(canvas, viewport, edits);
+      }
+      
+      renderTextOverlays(page, viewport, pageId, edits, canvas);
+    } catch (err: any) {
+      if (err && err.name === 'RenderingCancelledException') {
+        return;
+      }
+      console.error(err);
+    }
+  }
+
+  function sampleBackgroundColor(canvas: HTMLCanvasElement, viewport: any, x: number, y: number, fontSize: number): { r: number, g: number, b: number } {
+    if (!canvas || canvas.width <= 0 || canvas.height <= 0) {
+      return { r: 255, g: 255, b: 255 };
+    }
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return { r: 255, g: 255, b: 255 };
+    
+    const transformX = x || 0;
+    const transformY = (y || 0) + (fontSize || 12) * 0.4;
+    
+    if (!viewport || typeof viewport.convertToViewportPoint !== 'function') {
+      return { r: 255, g: 255, b: 255 };
+    }
+
+    const [canvasX, canvasY] = viewport.convertToViewportPoint(transformX, transformY);
+    
+    if (isNaN(canvasX) || isNaN(canvasY) || !isFinite(canvasX) || !isFinite(canvasY)) {
+      return { r: 255, g: 255, b: 255 };
+    }
+    
+    try {
+      // Gather multiple candidate points around the start of the text segment to avoid text characters
+      const candidates = [
+        { x: canvasX - 8, y: canvasY },
+        { x: canvasX - 16, y: canvasY },
+        { x: canvasX + 4, y: canvasY - (fontSize || 12) * 0.8 },
+        { x: 10, y: 10 } // Page-wide top-left margin fallback
+      ];
+      
+      let bestColor = { r: 255, g: 255, b: 255, score: -1 };
+      
+      for (const cand of candidates) {
+        const sx = Math.max(0, Math.min(canvas.width - 1, Math.round(cand.x)));
+        const sy = Math.max(0, Math.min(canvas.height - 1, Math.round(cand.y)));
+        
+        const imgData = ctx.getImageData(sx, sy, 1, 1).data;
+        if (imgData[3] === 0) continue; // transparent
+        
+        const r = imgData[0];
+        const g = imgData[1];
+        const b = imgData[2];
+        
+        // Background color is typically the brightest element (largest RGB sum)
+        const score = r + g + b;
+        if (score > bestColor.score) {
+          bestColor = { r, g, b, score };
+        }
+      }
+      
+      if (bestColor.score >= 0) {
+        // Fallback to pure white if the brightest candidate is still too dark (likely text/line)
+        if (bestColor.score < 300) {
+          return { r: 255, g: 255, b: 255 };
+        }
+        return { r: bestColor.r, g: bestColor.g, b: bestColor.b };
+      }
+      
+      return { r: 255, g: 255, b: 255 };
+    } catch (e) {
+      console.warn("Failed to sample background color:", e);
+      return { r: 255, g: 255, b: 255 };
+    }
+  }
+
+  async function renderTextOverlays(page: any, viewport: any, pageId: string, currentEdits: any, canvas: HTMLCanvasElement) {
+    const overlay = document.getElementById('edit-text-overlay') as HTMLElement;
+    const listContainer = document.getElementById('edit-text-list') as HTMLElement;
+    
+    if (!overlay || !listContainer) return;
+    
+    overlay.innerHTML = '';
+    listContainer.innerHTML = '';
+    
+    try {
+      const textContent = await page.getTextContent();
+      const hasEdits = currentEdits && currentEdits.items && currentEdits.items.length > 0;
+      const editItems = hasEdits ? JSON.parse(JSON.stringify(currentEdits.items)) : [];
+      
+      const validItems = textContent.items.filter((item: any) => item && item.transform && Array.isArray(item.transform) && item.transform.length >= 6);
+      
+      const segmentCountEl = document.getElementById('edit-segment-count') as HTMLElement;
+      if (segmentCountEl) segmentCountEl.textContent = `${validItems.length} Items`;
+      
+      if (validItems.length === 0) {
+        listContainer.innerHTML = `
+          <div class="p-6 border border-neutral-800 bg-neutral-950/20 rounded-xl text-center font-mono text-xs text-mute flex flex-col items-center justify-center gap-3 h-full min-h-[220px]">
+            <svg class="h-8 w-8 text-neutral-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span class="font-bold uppercase tracking-wider text-white">No Text Detected</span>
+            <span class="leading-relaxed text-[10px] text-neutral-500 max-w-[240px]">
+              This page appears to contain only images or scanned content. Direct text editing is only supported for digital text layers.
+            </span>
+          </div>
+        `;
+        tempModalEdits = [];
+        return;
+      }
+      
+      validItems.forEach((item: any, idx: number) => {
+        try {
+          const styles = textContent.styles || {};
+          const style = styles[item.fontName] || {};
+          const fontFamilyName = style.fontFamily || '';
+
+          // Retrieve font metadata from PDF.js page resources dynamically
+          let pdfJsFont = null;
+          try {
+            if (page.commonObjs && typeof page.commonObjs.has === 'function' && page.commonObjs.has(item.fontName)) {
+              pdfJsFont = page.commonObjs.get(item.fontName);
+            } else if (page.objs && typeof page.objs.has === 'function' && page.objs.has(item.fontName)) {
+              pdfJsFont = page.objs.get(item.fontName);
+            }
+          } catch (e) {
+            console.warn("Failed to retrieve font object from PDF.js page resources:", e);
+          }
+
+          const psNameLower = (pdfJsFont && typeof pdfJsFont.name === 'string' ? pdfJsFont.name : '').toLowerCase();
+          const fallbackLower = (pdfJsFont && typeof pdfJsFont.fallbackName === 'string' ? pdfJsFont.fallbackName : '').toLowerCase();
+          const nameLower = (item.fontName || '').toLowerCase();
+          const familyLower = fontFamilyName.toLowerCase();
+
+          // Robust check for bold/italic using both boolean properties and string patterns
+          let originalIsBold = false;
+          if (pdfJsFont && typeof pdfJsFont.bold === 'boolean') {
+            originalIsBold = pdfJsFont.bold;
+          }
+          if (!originalIsBold) {
+            originalIsBold = psNameLower.includes('bold') || psNameLower.includes('heavy') || psNameLower.includes('black') || 
+                             psNameLower.includes('-bold') || psNameLower.includes('_bold') || psNameLower.includes('w-700') || 
+                             psNameLower.includes('w-800') || psNameLower.includes('w-900') ||
+                             fallbackLower.includes('bold') || nameLower.includes('bold') || familyLower.includes('bold') || 
+                             nameLower.includes('g_d0_f2');
+          }
+
+          let originalIsItalic = false;
+          if (pdfJsFont && typeof pdfJsFont.italic === 'boolean') {
+            originalIsItalic = pdfJsFont.italic;
+          }
+          if (!originalIsItalic) {
+            originalIsItalic = psNameLower.includes('italic') || psNameLower.includes('oblique') || 
+                               psNameLower.includes('slanted') || psNameLower.includes('skewed') || 
+                               fallbackLower.includes('italic') || nameLower.includes('italic') || familyLower.includes('italic');
+          }
+
+          // Gather all font clues for mapFontName to resolve standard PDF fonts
+          let fontClues = fontFamilyName + ' ' + (item.fontName || '') + ' ' + psNameLower + ' ' + fallbackLower;
+          if (originalIsBold) fontClues += ' bold';
+          if (originalIsItalic) fontClues += ' italic';
+          const mappedFont = mapFontName(fontClues);
+          
+          let family = 'helvetica';
+          if (fontClues.toLowerCase().includes('times') || fontClues.toLowerCase().includes('roman') || fontClues.toLowerCase().includes('serif') || fontClues.toLowerCase().includes('georgia')) {
+            family = 'times';
+          } else if (fontClues.toLowerCase().includes('courier') || fontClues.toLowerCase().includes('mono') || fontClues.toLowerCase().includes('consolas') || fontClues.toLowerCase().includes('code') || fontClues.toLowerCase().includes('monospace')) {
+            family = 'courier';
+          }
+          
+          let editItem = editItems.find((e: any) => e.index === idx);
+          
+          const itemX = (item.transform && item.transform[4]) || 0;
+          const itemY = (item.transform && item.transform[5]) || 0;
+          const itemScale = (item.transform && item.transform[3]) || 12;
+          const sampledBg = sampleBackgroundColor(canvas, viewport, itemX, itemY, itemScale);
+          
+          if (!editItem) {
+            editItem = {
+              index: idx,
+              originalText: item.str || '',
+              editedText: item.str || '',
+              x: itemX,
+              y: itemY,
+              width: item.width || 0,
+              height: item.height || itemScale || 12,
+              fontSize: itemScale || 12,
+              originalFontSize: itemScale || 12,
+              fontFamilyGroup: family,
+              isBold: originalIsBold,
+              originalIsBold: originalIsBold,
+              isItalic: originalIsItalic,
+              originalIsItalic: originalIsItalic,
+              isUnderlined: false,
+              fontNameMapped: mappedFont,
+              fontNameOriginal: item.fontName || '',
+              bgColor: sampledBg
+            };
+            editItems.push(editItem);
+          } else {
+            editItem.bgColor = sampledBg;
+            if (editItem.isBold === undefined) editItem.isBold = originalIsBold;
+            if (editItem.isItalic === undefined) editItem.isItalic = originalIsItalic;
+            if (editItem.isUnderlined === undefined) editItem.isUnderlined = false;
+            if (editItem.fontFamilyGroup === undefined) editItem.fontFamilyGroup = family;
+            if (editItem.originalFontSize === undefined) editItem.originalFontSize = editItem.fontSize;
+          }
+          
+          const transformX = itemX;
+          const transformY = itemY;
+          const transformScale = itemScale;
+          
+          const [x, y] = viewport.convertToViewportPoint(transformX, transformY);
+          const fontSize = transformScale * viewport.scale;
+          const width = (item.width || 0) * viewport.scale;
+          const height = fontSize * 1.25;
+          
+          const highlightBox = document.createElement('div');
+          highlightBox.className = 'absolute border border-transparent hover:border-primary/40 hover:bg-primary/5 rounded transition-all cursor-pointer z-20';
+          
+          highlightBox.style.left = `${x}px`;
+          highlightBox.style.top = `${y - fontSize * 0.9}px`;
+          highlightBox.style.width = `${Math.max(width, 40)}px`;
+          highlightBox.style.height = `${height}px`;
+          highlightBox.setAttribute('data-index', idx.toString());
+          
+          const listItem = document.createElement('div');
+          listItem.className = 'flex flex-col gap-1.5 p-3 rounded-lg border border-neutral-800 bg-neutral-950/40 hover:border-neutral-700 transition-colors text-left';
+          listItem.innerHTML = `
+            <div class="flex justify-between items-center text-[8px] font-mono text-mute uppercase">
+              <span>Segment #${idx + 1}</span>
+              <span class="text-primary truncate max-w-[120px]" title="${fontFamilyName}">${fontFamilyName || 'Helvetica'}</span>
+            </div>
+            <textarea 
+              class="w-full text-xs bg-canvas border border-neutral-800 focus:border-primary focus:outline-none rounded-lg p-2 text-white placeholder:text-neutral-700 transition-all resize-y min-h-[50px] font-sans"
+              data-index="${idx}"
+              rows="2"
+            >${editItem.editedText}</textarea>
+          `;
+          
+          const textarea = listItem.querySelector('textarea') as HTMLTextAreaElement;
+          
+          // Click on canvas highlight box focuses and scrolls the corresponding sidebar textarea into view
+          highlightBox.addEventListener('click', () => {
+            textarea.focus();
+            textarea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            setActiveSegment(idx, editItem);
+          });
+          
+          // Update model and trigger real-time preview updates on the canvas as the user types
+          textarea.addEventListener('input', () => {
+            editItem.editedText = textarea.value;
+            markAsModified(listItem, editItem);
+            redrawEditCanvas();
+          });
+          
+          textarea.addEventListener('focus', () => {
+            highlightBox.classList.add('border-primary', 'bg-primary/5');
+            highlightBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            setActiveSegment(idx, editItem);
+          });
+          
+          textarea.addEventListener('blur', () => {
+            highlightBox.classList.remove('border-primary', 'bg-primary/5');
+          });
+          
+          overlay.appendChild(highlightBox);
+          listContainer.appendChild(listItem);
+          
+          markAsModified(listItem, editItem);
+        } catch (itemErr) {
+          console.error("Error rendering text segment:", itemErr, item);
+        }
+      });
+      
+      tempModalEdits = editItems;
+    } catch (err: any) {
+      console.error("Error in renderTextOverlays:", err);
+      const segmentCountEl = document.getElementById('edit-segment-count') as HTMLElement;
+      if (segmentCountEl) segmentCountEl.textContent = `Error`;
+      
+      listContainer.innerHTML = `
+        <div class="p-4 border border-red-500/20 bg-red-500/5 rounded-xl text-center font-mono text-xs text-red-400">
+          <span class="font-bold uppercase tracking-wider block mb-1">Text Extraction Failed</span>
+          ${err.message || err}
+        </div>
+      `;
+      tempModalEdits = [];
+    }
+  }
+
+  function markAsModified(listItem: HTMLElement, editItem: any) {
+    const isModified = editItem.editedText !== editItem.originalText || 
+                       editItem.fontSize !== (editItem.originalFontSize || editItem.fontSize) || 
+                       editItem.isBold !== (editItem.originalIsBold || false) || 
+                       editItem.isItalic !== (editItem.originalIsItalic || false) || 
+                       editItem.isUnderlined;
+                       
+    if (isModified) {
+      listItem.classList.add('border-primary/40');
+      const badge = listItem.querySelector('span') as HTMLElement;
+      if (badge && !badge.textContent?.includes('EDITED')) {
+        badge.innerHTML = `Segment #${editItem.index + 1} <span class="text-primary font-bold ml-1.5">[EDITED]</span>`;
+      }
+    } else {
+      listItem.classList.remove('border-primary/40');
+      const badge = listItem.querySelector('span') as HTMLElement;
+      if (badge) {
+        badge.innerHTML = `Segment #${editItem.index + 1}`;
+      }
+    }
+  }
+
+  function openEditModal(pageId: string) {
+    const editablePages = pageOrder
+      .map(idx => virtualPages[idx])
+      .filter(vp => {
+        const ext = vp.fileName.split('.').pop()?.toLowerCase() || '';
+        return ['pdf', 'pptx', 'docx'].includes(ext);
+      });
+      
+    if (editablePages.length === 0) return;
+    
+    // Setup temporary session edits starting with the current state of pageEdits
+    tempSessionEdits = JSON.parse(JSON.stringify(pageEdits));
+    
+    // Setup select options
+    const pageSelect = document.getElementById('edit-page-select') as HTMLSelectElement;
+    if (pageSelect) {
+      pageSelect.innerHTML = '';
+      editablePages.forEach((vp, index) => {
+        const opt = document.createElement('option');
+        opt.value = vp.id;
+        opt.textContent = `${String(index + 1).padStart(2, '0')} (${vp.fileName})`;
+        opt.className = 'bg-neutral-950 text-white';
+        pageSelect.appendChild(opt);
+      });
+    }
+    
+    const totalPagesLabel = document.getElementById('edit-total-pages-label') as HTMLElement;
+    if (totalPagesLabel) {
+      totalPagesLabel.textContent = `OF ${String(editablePages.length).padStart(2, '0')}`;
+    }
+    
+    sessionEditablePages = editablePages;
+    
+    // Load the selected page
+    loadPageInSession(pageId);
+    
+    // Show modal
+    const editModal = document.getElementById('edit-modal') as HTMLElement;
+    if (editModal) editModal.classList.remove('hidden');
+  }
+
+  function openGlobalEditModal() {
+    // Find all editable pages in visual order
+    const editablePages = pageOrder
+      .map(idx => virtualPages[idx])
+      .filter(vp => {
+        const ext = vp.fileName.split('.').pop()?.toLowerCase() || '';
+        return ['pdf', 'pptx', 'docx'].includes(ext);
+      });
+      
+    if (editablePages.length === 0) return;
+    
+    // Setup temporary session edits starting with the current state of pageEdits
+    tempSessionEdits = JSON.parse(JSON.stringify(pageEdits));
+    
+    // Setup select options
+    const pageSelect = document.getElementById('edit-page-select') as HTMLSelectElement;
+    if (pageSelect) {
+      pageSelect.innerHTML = '';
+      editablePages.forEach((vp, index) => {
+        const opt = document.createElement('option');
+        opt.value = vp.id;
+        opt.textContent = `${String(index + 1).padStart(2, '0')} (${vp.fileName})`;
+        opt.className = 'bg-neutral-950 text-white';
+        pageSelect.appendChild(opt);
+      });
+    }
+    
+    const totalPagesLabel = document.getElementById('edit-total-pages-label') as HTMLElement;
+    if (totalPagesLabel) {
+      totalPagesLabel.textContent = `OF ${String(editablePages.length).padStart(2, '0')}`;
+    }
+    
+    sessionEditablePages = editablePages;
+    
+    // Load the first page
+    loadPageInSession(editablePages[0].id);
+    
+    // Show modal
+    const editModal = document.getElementById('edit-modal') as HTMLElement;
+    if (editModal) editModal.classList.remove('hidden');
+  }
+
+  async function loadPageInSession(pageId: string) {
+    // Save current active page's text modifications into tempSessionEdits
+    if (currentEditingPageId && currentEditingPageId !== pageId) {
+      tempSessionEdits[currentEditingPageId] = {
+        items: tempModalEdits,
+        textColor: modalTextColor
+      };
+    }
+    
+    currentEditingPageId = pageId;
+    const vp = virtualPages.find(p => p.id === pageId);
+    if (!vp) return;
+    
+    // Update dropdown value
+    const pageSelect = document.getElementById('edit-page-select') as HTMLSelectElement;
+    if (pageSelect) {
+      pageSelect.value = pageId;
+    }
+    
+    // Update title
+    const titleEl = document.getElementById('edit-modal-title') as HTMLElement;
+    if (titleEl) titleEl.textContent = `${vp.fileName.toUpperCase()}`;
+    
+    // Load color edits for this page from tempSessionEdits
+    const edits = tempSessionEdits[pageId] || { items: [], textColor: 'black' };
+    
+    // Update color buttons UI state
+    const setModalTextColor = (window as any).setModalTextColor;
+    if (typeof setModalTextColor === 'function') setModalTextColor(edits.textColor);
+    
+    setActiveSegment(null); // Clear active segment style panel selection!
+    
+    // Update prev/next button enabled states
+    const curIndex = sessionEditablePages.findIndex(p => p.id === pageId);
+    const prevBtn = document.getElementById('edit-prev-btn') as HTMLButtonElement;
+    const nextBtn = document.getElementById('edit-next-btn') as HTMLButtonElement;
+    
+    if (prevBtn) prevBtn.disabled = curIndex === 0;
+    if (nextBtn) nextBtn.disabled = curIndex === sessionEditablePages.length - 1;
+    
+    // Render high-res edit canvas & overlays
+    await renderEditCanvasSession(pageId);
+  }
+
+  async function renderEditCanvasSession(pageId: string) {
+    const vp = virtualPages.find(p => p.id === pageId);
+    if (!vp) return;
+    
+    const pdfJsDoc = loadedPdfJsDocs[vp.fileIndex];
+    const page = await pdfJsDoc.getPage(vp.pageIndex + 1);
+    
+    const canvas = document.getElementById('edit-page-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    
+    const parentContainer = canvas.parentElement?.parentElement;
+    const parentWidth = parentContainer && parentContainer.clientWidth > 0 ? parentContainer.clientWidth - 32 : 500;
+    const parentHeight = parentContainer && parentContainer.clientHeight > 0 ? parentContainer.clientHeight - 32 : 550;
+    
+    const originalViewport = page.getViewport({ scale: 1 });
+    const ratio = originalViewport.width / originalViewport.height;
+    
+    let scale = 1;
+    if (parentWidth / parentHeight > ratio) {
+      scale = parentHeight / originalViewport.height;
+    } else {
+      scale = parentWidth / originalViewport.width;
+    }
+    const viewport = page.getViewport({ scale });
+    currentViewport = viewport;
+    
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    
+    const container = document.getElementById('edit-canvas-container') as HTMLElement;
+    if (container) {
+      container.style.width = viewport.width + 'px';
+      container.style.height = viewport.height + 'px';
+    }
+    
+    if (!cleanOffscreenCanvas) {
+      cleanOffscreenCanvas = document.createElement('canvas');
+    }
+    cleanOffscreenCanvas.width = viewport.width;
+    cleanOffscreenCanvas.height = viewport.height;
+    const offscreenContext = cleanOffscreenCanvas.getContext('2d');
+    if (!offscreenContext) return;
+    
+    if (activeEditCanvasRenderTask) {
+      try {
+        activeEditCanvasRenderTask.cancel();
+      } catch (e) {}
+    }
+
+    const renderContext = {
+      canvasContext: offscreenContext,
+      viewport: viewport
+    };
+    
+    try {
+      const renderTask = page.render(renderContext);
+      activeEditCanvasRenderTask = renderTask;
+      await renderTask.promise;
+      if (activeEditCanvasRenderTask === renderTask) {
+        activeEditCanvasRenderTask = null;
+      }
+      
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(cleanOffscreenCanvas, 0, 0);
+      
+      const edits = tempSessionEdits[pageId] || { items: [], textColor: 'black' };
+      
+      await renderTextOverlays(page, viewport, pageId, edits, canvas);
+      
+      if (tempSessionEdits[pageId]) {
+        drawEditsOnCanvas(canvas, viewport, edits);
+      }
+    } catch (err: any) {
+      if (err && err.name === 'RenderingCancelledException') {
+        return;
+      }
+      console.error(err);
+    }
+  }
+
+  function setupSessionPageSelector() {
+    const pageSelect = document.getElementById('edit-page-select') as HTMLSelectElement;
+    const prevBtn = document.getElementById('edit-prev-btn') as HTMLButtonElement;
+    const nextBtn = document.getElementById('edit-next-btn') as HTMLButtonElement;
+    
+    if (pageSelect) {
+      pageSelect.addEventListener('change', () => {
+        loadPageInSession(pageSelect.value);
+      });
+    }
+    
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        const curIndex = sessionEditablePages.findIndex(p => p.id === currentEditingPageId);
+        if (curIndex > 0) {
+          loadPageInSession(sessionEditablePages[curIndex - 1].id);
+        }
+      });
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        const curIndex = sessionEditablePages.findIndex(p => p.id === currentEditingPageId);
+        if (curIndex < sessionEditablePages.length - 1) {
+          loadPageInSession(sessionEditablePages[curIndex + 1].id);
+        }
+      });
+    }
+  }
+
+  function closeEditModal() {
+    const editModal = document.getElementById('edit-modal') as HTMLElement;
+    if (editModal) editModal.classList.add('hidden');
+    currentEditingPageId = '';
+    tempModalEdits = [];
+    tempSessionEdits = {};
+    sessionEditablePages = [];
+  }
+
+  function saveEditChanges() {
+    // Cache current active page modifications first
+    if (currentEditingPageId) {
+      tempSessionEdits[currentEditingPageId] = {
+        items: tempModalEdits,
+        textColor: modalTextColor
+      };
+    }
+    
+    // Commit the session edits to the global pageEdits dictionary
+    pageEdits = tempSessionEdits;
+    
+    closeEditModal();
+    renderPagesGrid();
   }
 
   function togglePageSelection(pageId: string) {
@@ -1597,6 +2845,62 @@ import Footer from '../components/Footer.astro';
         for (const vp of selectedVirtualPages) {
           const originalLibDoc = loadedPdfDocs[vp.fileIndex];
           const [copiedPage] = await newPdfDoc.copyPages(originalLibDoc, [vp.pageIndex]);
+          
+          // Apply user edits using pdf-lib
+          if (pageEdits[vp.id]) {
+            const edits = pageEdits[vp.id];
+            for (const editItem of edits.items) {
+              const isModified = editItem.editedText !== editItem.originalText || 
+                                 editItem.fontSize !== (editItem.originalFontSize || editItem.fontSize) || 
+                                 editItem.isBold !== (editItem.originalIsBold || false) || 
+                                 editItem.isItalic !== (editItem.originalIsItalic || false) || 
+                                 editItem.isUnderlined;
+              if (isModified) {
+                // Erase old text block using the dynamically sampled background color
+                const bg = editItem.bgColor || { r: 255, g: 255, b: 255 };
+                const fillColor = rgb(bg.r / 255, bg.g / 255, bg.b / 255);
+                const origSize = editItem.originalFontSize || editItem.fontSize;
+                copiedPage.drawRectangle({
+                  x: editItem.x,
+                  y: editItem.y - origSize * 0.15,
+                  width: editItem.width * 1.05,
+                  height: origSize * 1.25,
+                  color: fillColor,
+                });
+                
+                // Embed matching font family
+                const fontToUse = await newPdfDoc.embedFont(editItem.fontNameMapped);
+                
+                // Set text color
+                let textColor = rgb(0, 0, 0);
+                if (edits.textColor === 'white') textColor = rgb(1, 1, 1);
+                else if (edits.textColor === 'red') textColor = rgb(0.8, 0.1, 0.1);
+                else if (edits.textColor === 'blue') textColor = rgb(0.1, 0.1, 0.8);
+                
+                // Write new text layer
+                const cleanText = sanitizeTextForWinAnsi(editItem.editedText);
+                copiedPage.drawText(cleanText, {
+                  x: editItem.x,
+                  y: editItem.y,
+                  size: editItem.fontSize,
+                  font: fontToUse,
+                  color: textColor,
+                });
+
+                // Draw underline if set
+                if (editItem.isUnderlined) {
+                  const textWidth = fontToUse.widthOfTextAtSize(cleanText, editItem.fontSize);
+                  copiedPage.drawLine({
+                    start: { x: editItem.x, y: editItem.y - editItem.fontSize * 0.05 },
+                    end: { x: editItem.x + textWidth, y: editItem.y - editItem.fontSize * 0.05 },
+                    thickness: Math.max(1, editItem.fontSize * 0.06),
+                    color: textColor,
+                  });
+                }
+              }
+            }
+          }
+          
           newPdfDoc.addPage(copiedPage);
         }
         
@@ -1658,6 +2962,7 @@ import Footer from '../components/Footer.astro';
     virtualPages = [];
     pageOrder = [];
     selectedPages.clear();
+    pageEdits = {};
     pendingFile = null;
     pendingFilesList = null;
     filePasswords = {};
@@ -1667,6 +2972,12 @@ import Footer from '../components/Footer.astro';
     searchSelectBtn.classList.add('hidden');
     updateStickyFooter();
     hideDecryptionPrompt();
+
+    // Reset Edit Pages button visibility
+    const editPagesBtn = document.getElementById('edit-pages-btn') as HTMLButtonElement;
+    if (editPagesBtn) {
+      editPagesBtn.classList.add('hidden');
+    }
   }
 
   // Utility helpers

@@ -4,15 +4,17 @@ import '../styles/global.css';
 interface Props {
 	title?: string;
 	description?: string;
+	robots?: string;
 }
 
 const { 
 	title = "PageSlice - Free PDF Extractor Online & PDF Page Remover",
-	description = "Extract, delete, organize, and merge pages from PDF, DOCX, PPTX, and image files 100% locally in your browser. The best free PDF extractor tool."
+	description = "Extract, delete, organize, and merge pages from PDF, DOCX, PPTX, and image files 100% locally in your browser. The best free PDF extractor tool.",
+	robots = "index, follow"
 } = Astro.props;
 
-const ogImageUrl = new URL('/og-image.png', Astro.url.href).toString();
-const canonicalUrl = Astro.url.href;
+const ogImageUrl = new URL('/og-image.png', 'https://pageslice.online').toString();
+const canonicalUrl = new URL(Astro.url.pathname, 'https://pageslice.online').toString();
 ---
 
 <!doctype html>
@@ -23,6 +25,7 @@ const canonicalUrl = Astro.url.href;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
+		<meta name="robots" content={robots} />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
@@ -41,6 +44,13 @@ const canonicalUrl = Astro.url.href;
 
 		<!-- Canonical URL -->
 		<link rel="canonical" href={canonicalUrl} />
+
+		<!-- Redirect pages.dev to custom domain -->
+		<script is:inline>
+			if (window.location.hostname.endsWith('.pages.dev')) {
+				window.location.replace('https://pageslice.online' + window.location.pathname + window.location.search + window.location.hash);
+			}
+		</script>
 		
 		<!-- Google Fonts: Inter for utility and body, Manrope for bold displays -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -53,10 +63,68 @@ const canonicalUrl = Astro.url.href;
 		<!-- JSZip library for client-side docx/pptx extraction -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" is:inline></script>
 
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-DH76STZGMM" is:inline></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+			gtag('config', 'G-DH76STZGMM');
+		</script>
+
 		<title>{title}</title>
 	</head>
 	<body class="bg-canvas-soft text-ink min-h-screen selection:bg-primary selection:text-on-primary">
 		<slot />
+
+		<!-- SpaceX Telemetry Anomaly Panel -->
+		<div id="debug-telemetry-tray" class="hidden fixed bottom-4 right-4 z-[999999] border border-red-500/30 bg-neutral-950/95 backdrop-blur-lg rounded-xl shadow-2xl p-4 w-80 font-mono text-[9px] text-red-400 flex flex-col gap-2">
+			<div class="flex justify-between items-center border-b border-red-500/20 pb-2">
+				<span class="font-bold uppercase tracking-widest text-[10px] text-red-500 flex items-center gap-1.5 animate-pulse">
+					<span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+					SYSTEM ANOMALY DETECTED
+				</span>
+				<button onclick="document.getElementById('debug-telemetry-tray').classList.add('hidden')" class="text-neutral-500 hover:text-white transition-colors cursor-pointer">CLOSE</button>
+			</div>
+			<div id="debug-telemetry-logs" class="max-h-36 overflow-y-auto space-y-2 select-text"></div>
+		</div>
+
+		<script is:inline>
+			(function() {
+				window.addEventListener('DOMContentLoaded', () => {
+					const tray = document.getElementById('debug-telemetry-tray');
+					const logs = document.getElementById('debug-telemetry-logs');
+					
+					function reportAnomaly(msg, type = 'error') {
+						if (!tray || !logs) return;
+						tray.classList.remove('hidden');
+						
+						const logEl = document.createElement('div');
+						logEl.className = 'border-b border-neutral-900 pb-1 last:border-b-0 break-words';
+						logEl.innerHTML = `<span class="text-red-500 font-bold">[${type.toUpperCase()}]</span> ${msg}`;
+						logs.appendChild(logEl);
+						logs.scrollTop = logs.scrollHeight;
+					}
+					
+					window.addEventListener('error', function(e) {
+						reportAnomaly(e.message + ' (' + (e.filename ? e.filename.split('/').pop() : 'inline') + ':' + e.lineno + ')');
+					});
+					
+					window.addEventListener('unhandledrejection', function(e) {
+						reportAnomaly('Promise rejection: ' + e.reason);
+					});
+					
+					const origError = console.error;
+					console.error = function(...args) {
+						origError.apply(console, args);
+						const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+						reportAnomaly(msg);
+					};
+				});
+			})();
+		</script>
 	</body>
 </html>
+
 
