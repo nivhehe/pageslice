@@ -20,6 +20,6 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.0",
     "tailwindcss": "^4.3.0",
-    "wrangler": "^3.109.0"
+    "wrangler": "^4.102.0"
   }
 }
